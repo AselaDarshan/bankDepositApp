@@ -194,7 +194,7 @@ public class cashDepositActivity extends AppCompatActivity {
 
     private void showTransactionCompleteDialog(String refNo){
         new AlertDialog.Builder(this)
-                .setTitle("Deposit Successful")
+                .setTitle("Cash Deposit Successful")
                 .setMessage(amount+" LKR has been successfully deposited to Account "+accountNo+"\n" +
                         "\n" +
                         "Ref No: "+refNo)

@@ -1,12 +1,16 @@
 package com.siplo.banking.bankdepositapp;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +20,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 public class ChequeDepositActivity extends AppCompatActivity implements InformationDialogFragment.InformationDialogListener {
@@ -25,6 +31,12 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
     private EditText mMobileView;
     private EditText mRefNoView;
     private ImageView mImageView;
+
+
+    private String accountNo;
+    private String amount;
+    private String mobile;
+    private String refNo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,15 +60,40 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
                 dispatchTakePictureIntent();
             }
         });
+
+
+        // The filter's action is BROADCAST_ACTION
+        IntentFilter mStatusIntentFilter = new IntentFilter(
+                Constants.BROADCAST_ACTION);
+
+
+        // Registers the DownloadStateReceiver and its intent filters
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                mMessageReceiver,
+                mStatusIntentFilter);
     }
 
     public void proceedCashDeposit(View view){
 
         if(validateInputs()){
-            DialogFragment newFragment = new InformationDialogFragment();
-            newFragment.show(getSupportFragmentManager(), "missiles");
+            Log.d("cheque_deposit","precessing deposit");
+            sendDataToServer();
         }
 
+    }
+
+    private void sendDataToServer(){
+        JSONObject depositData = new JSONObject();
+        try{
+            depositData.put(Constants.ACCOUNT_NO_KEY,accountNo);
+            depositData.put(Constants.AMOUNT_KEY,amount);
+            depositData.put(Constants.MOBILE_KEY,mobile);
+            depositData.put(Constants.REF_NO_KEY,refNo);
+        }catch (JSONException e){
+            Log.e("cash_deposit","jason error: "+e);
+        }
+
+        ServerCommunicationIntentService.sendPostRequest(this, depositData.toString(),Constants.SERVER_URL+Constants.CASH_DEPOSIT_ROUTE);
     }
     public void captureImage(View view){
 
@@ -86,8 +123,15 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
 
     public boolean validateInputs(){
         // Store values at the time of the login attempt.
-        String account = mAccountView.getText().toString();
-
+        accountNo = mAccountView.getText().toString();
+        amount =  mAmountView.getText().toString();
+        mobile = mMobileView.getText().toString();
+        refNo = mRefNoView.getText().toString();
+        // Reset errors.
+        mAccountView.setError(null);
+        mAmountView.setError(null);
+        mMobileView.setError(null);
+        mRefNoView.setError(null);
         // Reset errors.
         mAccountView.setError(null);
         mAmountView.setError(null);
@@ -100,9 +144,21 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
         boolean cancel = false;
         View focusView = null;
 
-        if (TextUtils.isEmpty(account)) {
+        if (TextUtils.isEmpty(accountNo)) {
             mAccountView.setError(getString(R.string.accountNo_empty));
             focusView = mAccountView;
+            cancel = true;
+
+        }
+        else if (TextUtils.isEmpty(amount)) {
+            mAmountView.setError(getString(R.string.amount_empty));
+            focusView = mAmountView;
+            cancel = true;
+
+        }
+        else if (TextUtils.isEmpty(mobile)) {
+            mMobileView.setError(getString(R.string.mobile_empty));
+            focusView = mMobileView;
             cancel = true;
 
         }
@@ -112,12 +168,28 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
         }
         return true;
     }
-    private void showTransactionCompleteDilaog(){
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(!isFinishing()) {
+                String response = intent.getStringExtra(Constants.EXTENDED_DATA_STATUS);
+                try {
+                    JSONObject jObject = new JSONObject(response);
+                    showTransactionCompleteDialog(jObject.getString(Constants.REF_NO_KEY));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+    };
+
+    private void showTransactionCompleteDialog(String refNo){
         new AlertDialog.Builder(this)
-                .setTitle("Deposit Successful")
-                .setMessage("1,200,000 LKR has been successfully deposited to Account 35327\n" +
+                .setTitle("Cheque Deposit Successful")
+                .setMessage(amount+" LKR has been successfully deposited to Account "+accountNo+"\n" +
                         "\n" +
-                        "Ref No: 45812")
+                        "Ref No: "+refNo)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // continue with delete
