@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">Amãna Bank</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_username">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="prompt_account_no">Account No</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This username is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <string name="cash_deposit">Cash Deposit</string>
+    <string name="cheque_deposit">Cheque Deposit</string>
+    <!--cash deposit activity-->
+    <string name="title_activity_cash_deposit">Cash Deposit</string>
+
+    <string name="prompt_amount">Amount</string>
+    <string name="prompt_mobile">Mobile No</string>
+    <string name="prompt_ref">Reference No</string>
+
+    <string name="proceed_button_text">Proceed</string>
+
+    <!--errors in cash deposit-->
+    <string name="accountNo_empty">Please Enter Account Number</string>
+    <string name="amount_empty">Please Enter Amount</string>
+    <string name="mobile_empty">Please Enter Mobile Number</string>
+    <string name="refNo_empty">Please Enter Reference Number</string>
+    <!--register activity-->
+    <string name="register_button_text">Register</string>
+    <string name="prompt_name">Name</string>
+    <string name="prompt_email">Email</string>
+    <string name="title_activity_cheque_deposit">ChequeDepositActivity</string>
+
+</resources>
