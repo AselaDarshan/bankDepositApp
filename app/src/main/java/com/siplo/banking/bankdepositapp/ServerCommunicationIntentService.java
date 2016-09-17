@@ -96,8 +96,10 @@ public class ServerCommunicationIntentService extends IntentService {
         }) {
             protected Map<String, String> getParams() {
                 Map<String, String> MyData = new HashMap<String, String>();
-                MyData.put("user",Parameters.currentUser);//sender's username
-                MyData.put("Data", data); //Post data.
+                if(Parameters.currentUser!=null) {
+                    MyData.put("user", Parameters.currentUser);//sender's username
+                }
+                MyData.put("data", data); //Post data.
                 return MyData;
             }
         };

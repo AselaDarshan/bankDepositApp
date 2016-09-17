@@ -21,9 +21,15 @@ public final class Constants {
     public static final String MOBILE_KEY="mobile";
     public static final String REF_NO_KEY = "ref_no";
 
+    //registration constants
+    public static final String NAME_KEY="name";
+    public static final String EMAIL_KEY = "email";
+
     //urls
     public static final String SERVER_URL = "http://192.168.8.102:8000";
+    //routes
     public static final String CASH_DEPOSIT_ROUTE = "/deposit/cash";
+    public static final String REGISTER_ROUTE="/registerApp";
 
 }
 

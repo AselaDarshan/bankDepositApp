@@ -58,11 +58,11 @@
             android:layout_height="wrap_content">
 
             <EditText
-                android:id="@+id/account"
+                android:id="@+id/accountNo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_account_no"
-                android:imeActionId="@+id/account"
+                android:imeActionId="@+id/accountNo"
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionUnspecified"
                 android:inputType="number"
