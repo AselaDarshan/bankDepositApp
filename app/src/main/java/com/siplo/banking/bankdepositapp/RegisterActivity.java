@@ -1,14 +1,19 @@
 package com.siplo.banking.bankdepositapp;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -27,6 +32,10 @@ public class RegisterActivity extends AppCompatActivity {
     private String accountNo;
     private String mobile;
     private String email;
+    private String deviceId;
+
+    private View mProgressView;
+    private View mRegisterFormView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +46,8 @@ public class RegisterActivity extends AppCompatActivity {
         mMobileView = (EditText)findViewById(R.id.mobile);
         mEmailView = (EditText)findViewById(R.id.email);
 
+        mRegisterFormView = findViewById(R.id.register_form);
+        mProgressView = findViewById(R.id.register_progress);
 
         // The filter's action is BROADCAST_ACTION
         IntentFilter mStatusIntentFilter = new IntentFilter(
@@ -46,10 +57,13 @@ public class RegisterActivity extends AppCompatActivity {
                 mMessageReceiver,
                 mStatusIntentFilter);
 
+        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+
+        deviceId = telephonyManager.getDeviceId();
 
     }
     public void register(View view){
-
+        showProgress(true);
         name = mNameView.getText().toString();
         accountNo = mAccountNoView.getText().toString();
         mobile = mMobileView.getText().toString();
@@ -69,6 +83,7 @@ public class RegisterActivity extends AppCompatActivity {
             registrationData.put(Constants.NAME_KEY,name);
             registrationData.put(Constants.MOBILE_KEY,mobile);
             registrationData.put(Constants.EMAIL_KEY,email);
+            registrationData.put(Constants.DEVICE_ID_KEY,deviceId);
         }catch (JSONException e){
             Log.e("registration","jason error: "+e);
         }
@@ -94,6 +109,7 @@ public class RegisterActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if(!isFinishing()) {
+                showProgress(false);
                 String response = intent.getStringExtra(Constants.EXTENDED_DATA_STATUS);
                 try {
                     JSONObject jObject = new JSONObject(response);
@@ -109,5 +125,39 @@ public class RegisterActivity extends AppCompatActivity {
         }
     };
 
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
+            mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mRegisterFormView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }
 }
