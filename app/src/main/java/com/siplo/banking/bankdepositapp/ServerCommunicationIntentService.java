@@ -96,7 +96,8 @@ public class ServerCommunicationIntentService extends IntentService {
         }) {
             protected Map<String, String> getParams() {
                 Map<String, String> MyData = new HashMap<String, String>();
-                MyData.put("Data", data); //Add the data you'd like to send to the server.
+                MyData.put("user",Parameters.currentUser);//sender's username
+                MyData.put("Data", data); //Post data.
                 return MyData;
             }
         };
