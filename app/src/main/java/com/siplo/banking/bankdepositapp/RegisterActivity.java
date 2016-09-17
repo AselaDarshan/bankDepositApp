@@ -27,12 +27,17 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText mAccountNoView;
     private EditText mMobileView;
     private EditText mEmailView;
+    private EditText mPasswordView;
+    private EditText mPasswordConfirmView;
 
     private String name;
+    private String password;
+    private String passwordConfirm;
     private String accountNo;
     private String mobile;
     private String email;
     private String deviceId;
+
 
     private View mProgressView;
     private View mRegisterFormView;
@@ -45,6 +50,8 @@ public class RegisterActivity extends AppCompatActivity {
         mNameView =(EditText)findViewById(R.id.name);
         mMobileView = (EditText)findViewById(R.id.mobile);
         mEmailView = (EditText)findViewById(R.id.email);
+        mPasswordView = (EditText)findViewById(R.id.password);
+        mPasswordConfirmView = (EditText)findViewById(R.id.passwordConfirm);
 
         mRegisterFormView = findViewById(R.id.register_form);
         mProgressView = findViewById(R.id.register_progress);
@@ -68,6 +75,8 @@ public class RegisterActivity extends AppCompatActivity {
         accountNo = mAccountNoView.getText().toString();
         mobile = mMobileView.getText().toString();
         email = mEmailView.getText().toString();
+        password = mPasswordView.getText().toString();
+        passwordConfirm =mPasswordConfirmView.getText().toString();
 
         sendDataToServer();
         //saveRegisteredState();
@@ -84,6 +93,7 @@ public class RegisterActivity extends AppCompatActivity {
             registrationData.put(Constants.MOBILE_KEY,mobile);
             registrationData.put(Constants.EMAIL_KEY,email);
             registrationData.put(Constants.DEVICE_ID_KEY,deviceId);
+            registrationData.put(Constants.PASSWORD_KEY,password);
         }catch (JSONException e){
             Log.e("registration","jason error: "+e);
         }

@@ -38,6 +38,7 @@
     <string name="register_button_text">Register</string>
     <string name="prompt_name">Name</string>
     <string name="prompt_email">Email</string>
+    <string name="prompt_passwordConfirm">Confirm Password</string>
     <string name="title_activity_cheque_deposit">ChequeDepositActivity</string>
 
 </resources>
