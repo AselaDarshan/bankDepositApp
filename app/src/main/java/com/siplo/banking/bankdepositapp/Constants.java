@@ -33,6 +33,7 @@ public final class Constants {
     public static final String SERVER_URL = "http://paymediasolutions.com";
     //routes
     public static final String CASH_DEPOSIT_ROUTE = "/deposit/cash";
+    public static final String CHEQUE_DEPOSIT_ROUTE = "/deposit/cheque";
     public static final String REGISTER_ROUTE="/registerApp";
     public static final String LOGIN_ROUTE="/loginApp";
 

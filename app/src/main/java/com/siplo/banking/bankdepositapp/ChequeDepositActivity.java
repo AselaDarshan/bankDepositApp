@@ -103,7 +103,7 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
             Log.e("cash_deposit","jason error: "+e);
         }
 
-        ServerCommunicationIntentService.sendPostRequest(this, depositData.toString(),Constants.SERVER_URL+Constants.CASH_DEPOSIT_ROUTE);
+        ServerCommunicationIntentService.sendPostRequest(this, depositData.toString(),Constants.SERVER_URL+Constants.CHEQUE_DEPOSIT_ROUTE);
     }
     public void captureImage(View view){
 
