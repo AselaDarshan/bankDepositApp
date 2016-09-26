@@ -26,11 +26,15 @@ import org.w3c.dom.Text;
 
 public class ChequeDepositActivity extends AppCompatActivity implements InformationDialogFragment.InformationDialogListener {
 
+    private final int REQUEST_IMAGE_CAPTURE_FRONT = 0;
+    private final int REQUEST_IMAGE_CAPTURE_BACK =1;
+
     private EditText mAccountView;
     private EditText mAmountView;
     private EditText mMobileView;
     private EditText mRefNoView;
-    private ImageView mImageView;
+    private ImageView mFrontImageView;
+    private ImageView mBackImageView;
 
 
     private String accountNo;
@@ -50,16 +54,17 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
         mMobileView = (EditText)findViewById(R.id.mobile);
         mRefNoView = (EditText)findViewById(R.id.refNo);
 
-        mImageView=(ImageView) findViewById(R.id.chequeImage);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-                dispatchTakePictureIntent();
-            }
-        });
+        mFrontImageView=(ImageView) findViewById(R.id.chequeImage);
+        mBackImageView=(ImageView) findViewById(R.id.chequeImageBack);
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+////                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+////                        .setAction("Action", null).show();
+//                dispatchTakePictureIntent();
+//            }
+//        });
 
 
         // The filter's action is BROADCAST_ACTION
@@ -72,7 +77,12 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
                 mMessageReceiver,
                 mStatusIntentFilter);
     }
-
+    public void captureFront(View view){
+        dispatchTakePictureIntent(REQUEST_IMAGE_CAPTURE_FRONT);
+    }
+    public void captureBack(View view){
+        dispatchTakePictureIntent(REQUEST_IMAGE_CAPTURE_BACK);
+    }
     public void proceedCashDeposit(View view){
 
         if(validateInputs()){
@@ -97,14 +107,16 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
     }
     public void captureImage(View view){
 
-        dispatchTakePictureIntent();
+       // dispatchTakePictureIntent();
     }
-    static final int REQUEST_IMAGE_CAPTURE = 1;
+    //static final int REQUEST_IMAGE_CAPTURE = 1;
 
-    private void dispatchTakePictureIntent() {
+    private void dispatchTakePictureIntent(int imageCaptureSide) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+
+
+            startActivityForResult(takePictureIntent, imageCaptureSide);
 //            Log.d("cheque","capturing");
         }
         else{
@@ -113,11 +125,19 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        if ((requestCode == REQUEST_IMAGE_CAPTURE_BACK ||requestCode == REQUEST_IMAGE_CAPTURE_FRONT)  && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
+
+
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            mImageView.setImageBitmap(imageBitmap);
-            mImageView.setRotation(90);
+            if(requestCode==REQUEST_IMAGE_CAPTURE_FRONT){
+                mFrontImageView.setImageBitmap(imageBitmap);
+                mFrontImageView.setRotation(90);
+            }
+            else{
+                mBackImageView.setImageBitmap(imageBitmap);
+                mBackImageView.setRotation(90);
+            }
         }
     }
 

@@ -41,4 +41,8 @@
     <string name="prompt_passwordConfirm">Confirm Password</string>
     <string name="title_activity_cheque_deposit">ChequeDepositActivity</string>
 
+    <!--cheque deposit activity-->
+    <string name="capture_front">Front</string>
+    <string name="capture_back">Back</string>
+
 </resources>

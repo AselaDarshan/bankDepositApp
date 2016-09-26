@@ -30,7 +30,7 @@ public final class Constants {
     public static final String USERNAME_KEY="username";
     public static final String PASSWORD_KEY = "password";
     //urls
-    public static final String SERVER_URL = "http://192.168.8.102:8000";
+    public static final String SERVER_URL = "http://paymediasolutions.com";
     //routes
     public static final String CASH_DEPOSIT_ROUTE = "/deposit/cash";
     public static final String REGISTER_ROUTE="/registerApp";
