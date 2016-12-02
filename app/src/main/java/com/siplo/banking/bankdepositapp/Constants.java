@@ -31,6 +31,7 @@ public final class Constants {
     public static final String PASSWORD_KEY = "password";
     //urls
     public static final String SERVER_URL = "http://amana.paymediasolutions.com";
+    //public static final String SERVER_URL = "192.168.180.25";
     //routes
     public static final String CASH_DEPOSIT_ROUTE = "/deposit/cash";
     public static final String CHEQUE_DEPOSIT_ROUTE = "/deposit/cheque";
