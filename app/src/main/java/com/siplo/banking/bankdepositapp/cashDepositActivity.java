@@ -82,9 +82,7 @@ public class cashDepositActivity extends AppCompatActivity {
             showProgress(true);
             Log.d("cash_deposit","processing deposit");
             sendDataToServer();
-
         }
-
     }
 
     private void sendDataToServer(){

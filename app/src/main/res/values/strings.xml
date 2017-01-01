@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Amãna Bank</string>
+    <string name="app_name">Mobile Collector</string>
 
     <!-- Strings related to login -->
     <string name="prompt_username">Username</string>
