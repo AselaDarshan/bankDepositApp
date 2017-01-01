@@ -12,7 +12,7 @@ android {
     compileSdkVersion 24
     buildToolsVersion "24.0.2"
     defaultConfig {
-        applicationId "com.siplo.banking.bankdepositapp"
+        applicationId "com.paymedia.bankdepositapp.amana"
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
