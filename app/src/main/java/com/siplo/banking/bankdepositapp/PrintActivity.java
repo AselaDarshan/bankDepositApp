@@ -45,12 +45,12 @@ public class PrintActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        initPrinting();
+//        initPrinting();
         printButton = (Button) findViewById(R.id.printButton);
         printButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                testPrint();
+                testPrint2();
             }
         });
     }
@@ -91,6 +91,25 @@ public class PrintActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void testPrint2(){
+        WoyouPrinter woyouPrinter = WoyouPrinter.getInstance();
+        woyouPrinter.initPrinter(getApplicationContext());
+        IWoyouService iWoyouService = woyouPrinter.getWoyouService();
+        if(iWoyouService !=null){
+            ThreadPoolManager.getInstance().executeTask(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        woyouService.printText("Amana Bank",callback);
+                        woyouService.lineWrap(1, callback);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
     }
 
 

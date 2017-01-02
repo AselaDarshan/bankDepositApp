@@ -23,6 +23,8 @@ import android.widget.EditText;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import woyou.aidlservice.jiuiv5.ICallback;
+
 public class cashDepositActivity extends AppCompatActivity {
 
     private EditText mAccountView;
@@ -245,5 +247,12 @@ public class cashDepositActivity extends AppCompatActivity {
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
+    }
+
+    private void   printReceipt(){
+        ICallback callback = null;
+        WoyouPrinter woyouPrinter = WoyouPrinter.getInstance();
+        woyouPrinter.initPrinter(getApplicationContext());
+        woyouPrinter.print("Cash Deposit\nAmount:", callback);
     }
 }
