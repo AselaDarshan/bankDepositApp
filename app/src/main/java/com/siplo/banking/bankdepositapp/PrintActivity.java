@@ -65,7 +65,7 @@ public class PrintActivity extends AppCompatActivity {
         bindService(intent, connService, Context.BIND_AUTO_CREATE);
     }
 
-    private void setButtonEnable(){
+    private void setButtonEnable(boolean flag){
 
     }
 
