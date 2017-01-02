@@ -5,7 +5,7 @@
     <!-- &lt;!&ndash; To auto-complete the email text field in the login form with the user's emails &ndash;&gt; -->
     <!-- <uses-permission android:name="android.permission.GET_ACCOUNTS" /> -->
     <!-- <uses-permission android:name="android.permission.READ_PROFILE" /> -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-feature
@@ -15,9 +15,9 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
-
 
     <application
         android:allowBackup="true"
@@ -56,7 +56,7 @@
 
         <service
             android:name=".ServerCommunicationIntentService"
-            android:exported="false"></service>
+            android:exported="false" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -65,9 +65,13 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
 
+        <activity
+            android:name=".PrintActivity"
+            android:label="@string/title_activity_print"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
