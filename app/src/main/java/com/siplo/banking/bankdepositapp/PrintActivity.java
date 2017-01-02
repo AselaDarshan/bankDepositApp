@@ -45,18 +45,17 @@ public class PrintActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        initView();
+        initPrinting();
+        printButton = (Button) findViewById(R.id.printButton);
         printButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                test();
+                testPrint();
             }
         });
     }
 
-    private void initView(){
-
-        printButton = (Button) findViewById(R.id.printButton);
+    private void initPrinting(){
 
         Intent intent=new Intent();
         intent.setPackage("woyou.aidlservice.jiuiv5");
@@ -69,7 +68,7 @@ public class PrintActivity extends AppCompatActivity {
 
     }
 
-    private void test(){
+    private void testPrint(){
         ThreadPoolManager.getInstance().executeTask(new Runnable() {
             @Override
             public void run() {
