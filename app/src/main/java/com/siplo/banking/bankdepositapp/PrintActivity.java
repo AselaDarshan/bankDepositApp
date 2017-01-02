@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -69,7 +70,28 @@ public class PrintActivity extends AppCompatActivity {
     }
 
     private void test(){
-
+        ThreadPoolManager.getInstance().executeTask(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    woyouService.printText("There were  ",callback);
+                    for(int i=24; i<=48; i+=6){
+                        woyouService.printTextWithFont("Sunmi", "", i, callback);
+                    }
+                    for(int i=48; i>=12; i-=2){
+                        woyouService.printTextWithFont("Sunmi", "", i, callback);
+                    }
+                    woyouService.lineWrap(1, callback);
+                    woyouService.printTextWithFont("ABCDEFGHIJKLMNOPQRSTUVWXYZ01234\n","",30, callback);
+                    woyouService.printTextWithFont("abcdefghijklmnopqrstuvwxyz56789\n","",30, callback);
+                    woyouService.printText("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\n", callback);
+                    woyouService.printText("abcdefghijklmnopqrstuvwxyz0123456789\n",callback);
+                    woyouService.lineWrap(4, callback);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 
