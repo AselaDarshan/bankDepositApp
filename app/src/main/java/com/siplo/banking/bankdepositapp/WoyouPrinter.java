@@ -52,13 +52,17 @@ public class WoyouPrinter {
 				@Override
 				public void run() {
 					try {
-						woyouService.printText("There were  ",callback);
-						for(int i=24; i<=48; i+=6){
-							woyouService.printTextWithFont(msg, "", i, callback);
+						woyouService.printTextWithFont("Amana Bank\n", "", 50, callback);
+						woyouService.lineWrap(2, callback);
+//						woyouService.printTextWithFont(msg, "", 24, callback);
+
+						for(int i=0; i<4; i++){
+							woyouService.printTextWithFont(msg, "", 24, callback);
 						}
-						for(int i=48; i>=12; i-=2){
-							woyouService.printTextWithFont(msg, "", i, callback);
-						}
+//						int[] width = new int[] { 10, 6, 6, 8 };
+//						int[] align = new int[] { 0, 2, 2, 2 };
+//						String[] text = new String[4];
+//						woyouService.printColumnsText(text, width, new int[] { 1, 2, 2, 2 }, callback);
 						woyouService.lineWrap(4, callback);
 					} catch (RemoteException e) {
 						e.printStackTrace();

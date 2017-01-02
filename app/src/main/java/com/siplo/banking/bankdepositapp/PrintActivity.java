@@ -94,19 +94,14 @@ public class PrintActivity extends AppCompatActivity {
     }
 
     private void testPrint2(){
-        WoyouPrinter woyouPrinter = WoyouPrinter.getInstance();
+        final WoyouPrinter woyouPrinter = WoyouPrinter.getInstance();
         woyouPrinter.initPrinter(getApplicationContext());
-        IWoyouService iWoyouService = woyouPrinter.getWoyouService();
-        if(iWoyouService !=null){
+        if(woyouPrinter !=null){
             ThreadPoolManager.getInstance().executeTask(new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        woyouService.printText("Amana Bank",callback);
-                        woyouService.lineWrap(1, callback);
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
+                        woyouPrinter.print("Amount : 20000 \nAccount : 1423432 \n",callback);
+//                        woyouPrinter.print("  ", callback);
                 }
             });
         }
