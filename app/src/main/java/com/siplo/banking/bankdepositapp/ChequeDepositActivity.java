@@ -35,6 +35,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import woyou.aidlservice.jiuiv5.ICallback;
+
 public class ChequeDepositActivity extends AppCompatActivity implements InformationDialogFragment.InformationDialogListener {
 
     private final int REQUEST_IMAGE_CAPTURE_FRONT = 0;
@@ -284,6 +286,7 @@ private void setPic() {
                 String response = intent.getStringExtra(Constants.EXTENDED_DATA_STATUS);
                 try {
                     JSONObject jObject = new JSONObject(response);
+                    printReceipt();
                     showTransactionCompleteDialog(jObject.getString(Constants.REF_NO_KEY));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -314,5 +317,12 @@ private void setPic() {
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         finish();
+    }
+
+    private void   printReceipt(){
+        ICallback callback = null;
+        WoyouPrinter woyouPrinter = WoyouPrinter.getInstance();
+        woyouPrinter.initPrinter(getApplicationContext());
+        woyouPrinter.print("\nTransaction Type : Cheque Deposit \nAmount : "+this.amount+" : \nAccount No: "+this.accountNo+" \nMobile No : "+this.mobile+"\nReference No : "+this.refNo,callback);
     }
 }
