@@ -159,6 +159,7 @@ public class cashDepositActivity extends AppCompatActivity {
                 String response = intent.getStringExtra(Constants.EXTENDED_DATA_STATUS);
                 try {
                     JSONObject jObject = new JSONObject(response);
+                    printReceipt();
                     showTransactionCompleteDialog(jObject.getString(Constants.REF_NO_KEY));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -253,6 +254,6 @@ public class cashDepositActivity extends AppCompatActivity {
         ICallback callback = null;
         WoyouPrinter woyouPrinter = WoyouPrinter.getInstance();
         woyouPrinter.initPrinter(getApplicationContext());
-        woyouPrinter.print("Cash Deposit\nAmount:", callback);
+        woyouPrinter.print("\nTransaction Type : Cash Deposit \n"+this.amount+" : \nAccount No: "+this.accountNo+" \nMobile No : "+this.mobile+"\nReference No : "+this.refNo,callback);
     }
 }

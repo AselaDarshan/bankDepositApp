@@ -100,7 +100,7 @@ public class PrintActivity extends AppCompatActivity {
             ThreadPoolManager.getInstance().executeTask(new Runnable() {
                 @Override
                 public void run() {
-                        woyouPrinter.print("Amount : 20000 \nAccount : 1423432 \n",callback);
+                        woyouPrinter.print("\nTransaction Type : Cash Deposit \nAmount : \nAccount : 1423432 \n",callback);
 //                        woyouPrinter.print("  ", callback);
                 }
             });

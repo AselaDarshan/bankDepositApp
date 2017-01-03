@@ -22,21 +22,21 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-//        if(isRegistered){
-//
-//            Intent intent = new Intent(this, LoginActivity.class);
-//            startActivity(intent);
-//            finish();
-//        }
-//        else{
-//            //if not registered go to register activity
-//            Intent intent = new Intent(this, RegisterActivity.class);
-//            startActivity(intent);
-//            finish();
-//        }
+        if(isRegistered){
+
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        else{
+            //if not registered go to register activity
+            Intent intent = new Intent(this, RegisterActivity.class);
+            startActivity(intent);
+            finish();
+        }
         //if not registered go to register activity
-        Intent intent = new Intent(this, PrintActivity.class);
-        startActivity(intent);
-        finish();
+//        Intent intent = new Intent(this, PrintActivity.class);
+//        startActivity(intent);
+//        finish();
     }
 }

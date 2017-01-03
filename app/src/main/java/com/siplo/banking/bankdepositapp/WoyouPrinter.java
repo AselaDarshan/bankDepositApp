@@ -63,6 +63,8 @@ public class WoyouPrinter {
 //						int[] align = new int[] { 0, 2, 2, 2 };
 //						String[] text = new String[4];
 //						woyouService.printColumnsText(text, width, new int[] { 1, 2, 2, 2 }, callback);
+						woyouService.lineWrap(2, callback);
+						woyouService.printTextWithFont("Powered By PayMedia\n", "", 15, callback);
 						woyouService.lineWrap(4, callback);
 					} catch (RemoteException e) {
 						e.printStackTrace();
