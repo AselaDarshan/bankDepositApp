@@ -84,6 +84,15 @@ public class RegisterActivity extends AppCompatActivity {
 //        Intent intent = new Intent(this, HomeActivity.class);
 //        startActivity(intent);
 //        finish();
+        SharedPreferences settings = getSharedPreferences(Constants.PERSONAL_KEY, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(Constants.NAME_KEY, name);
+        editor.putString(Constants.MOBILE_KEY,mobile);
+
+        // Commit the edits!
+        editor.commit();
+
+
     }
     private void sendDataToServer(){
         JSONObject registrationData = new JSONObject();

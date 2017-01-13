@@ -120,6 +120,9 @@ public class LoginActivity extends AppCompatActivity {
                 mMessageReceiver,
                 mStatusIntentFilter);
 
+
+
+
     }
 
 
@@ -212,6 +215,8 @@ public class LoginActivity extends AppCompatActivity {
         ServerCommunicationIntentService.sendPostRequest(this, registrationData.toString(),Constants.SERVER_URL+Constants.LOGIN_ROUTE);
     }
     private void loginSucceed(){
+
+
         Log.d("login","login success");
         Parameters.currentUser=username;
         loadHomepage();

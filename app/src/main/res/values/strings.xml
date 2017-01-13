@@ -25,7 +25,8 @@
 
     <string name="prompt_amount">Amount</string>
     <string name="prompt_mobile">Mobile No</string>
-    <string name="prompt_ref">Reference No</string>
+    <string name="prompt_ref">Reference</string>
+    <string name="prompt_check">Check No</string>
 
     <string name="proceed_button_text">Proceed</string>
 
@@ -44,5 +45,6 @@
     <!--cheque deposit activity-->
     <string name="capture_front">Front</string>
     <string name="capture_back">Back</string>
+    <string name="next_cheque">Next</string>
 
 </resources>
