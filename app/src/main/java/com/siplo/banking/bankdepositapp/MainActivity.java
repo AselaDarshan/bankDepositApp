@@ -34,5 +34,9 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+        //if not registered go to register activity
+//        Intent intent = new Intent(this, PrintActivity.class);
+//        startActivity(intent);
+//        finish();
     }
 }

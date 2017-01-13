@@ -25,6 +25,8 @@ import android.widget.EditText;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import woyou.aidlservice.jiuiv5.ICallback;
+
 public class cashDepositActivity extends AppCompatActivity {
 
     private EditText mAccountView;
@@ -167,6 +169,7 @@ public class cashDepositActivity extends AppCompatActivity {
                 String response = intent.getStringExtra(Constants.EXTENDED_DATA_STATUS);
                 try {
                     JSONObject jObject = new JSONObject(response);
+                    printReceipt();
                     showTransactionCompleteDialog(jObject.getString(Constants.REF_NO_KEY));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -256,13 +259,23 @@ public class cashDepositActivity extends AppCompatActivity {
             mFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
+
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == android.R.id.home){
+        if (id == android.R.id.home) {
             finish();
         }
 
-        return  super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    private void   printReceipt(){
+        ICallback callback = null;
+        WoyouPrinter woyouPrinter = WoyouPrinter.getInstance();
+        woyouPrinter.initPrinter(getApplicationContext());
+        woyouPrinter.print("\nTransaction Type : Cash Deposit \nAmount : "+this.amount+" : \nAccount No: "+this.accountNo+" \nMobile No : "+this.mobile+"\nReference No : "+this.refNo,callback);
+
     }
 }

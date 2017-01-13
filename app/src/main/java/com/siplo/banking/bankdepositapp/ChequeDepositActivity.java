@@ -67,6 +67,8 @@ import static android.R.attr.phoneNumber;
 import static android.text.InputType.TYPE_CLASS_TEXT;
 import static android.view.inputmethod.EditorInfo.IME_ACTION_UNSPECIFIED;
 
+import woyou.aidlservice.jiuiv5.ICallback;
+
 public class ChequeDepositActivity extends AppCompatActivity implements InformationDialogFragment.InformationDialogListener {
 
     private final int REQUEST_IMAGE_CAPTURE_FRONT = 0;
@@ -376,7 +378,12 @@ private void setPic() {
                 String response = intent.getStringExtra(Constants.EXTENDED_DATA_STATUS);
                 try {
                     JSONObject jObject = new JSONObject(response);
+
                     showTransactionCompleteDialog();
+
+                    printReceipt();
+                    showTransactionCompleteDialog();
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -407,6 +414,7 @@ private void setPic() {
     public void onDialogPositiveClick(DialogFragment dialog) {
         finish();
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
@@ -789,5 +797,13 @@ private void setPic() {
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
+    }
+
+    private void   printReceipt(){
+        ICallback callback = null;
+        WoyouPrinter woyouPrinter = WoyouPrinter.getInstance();
+        woyouPrinter.initPrinter(getApplicationContext());
+        woyouPrinter.print("\nTransaction Type : Cheque Deposit \nAmount : "+this.amount+" : \nAccount No: "+this.accountNo+" \nMobile No : "+this.mobile+"\nReference No : "+this.refNo,callback);
+
     }
 }
