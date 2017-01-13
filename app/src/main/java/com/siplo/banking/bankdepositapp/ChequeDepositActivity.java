@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -176,10 +177,10 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
                 for (int i =0;i<size;i++){
                     JSONObject tempCheckData = new JSONObject();
 
-                    tempCheckData.put(Constants.AMOUNT_KEY,((TextInputLayout)(chequeList.get(i).getChildAt(1))).getEditText().getText());
+                    tempCheckData.put(Constants.AMOUNT_KEY,((TextInputLayout)(chequeList.get(i).getChildAt(2))).getEditText().getText());
 
 
-                    tempCheckData.put(Constants.CHECK_NO_KEY,((TextInputLayout)(chequeList.get(i).getChildAt(2))).getEditText().getText());
+                    tempCheckData.put(Constants.CHECK_NO_KEY,((TextInputLayout)(chequeList.get(i).getChildAt(1))).getEditText().getText());
                     depositCheckDatas.put(tempCheckData);
                 }
                 checks.put(Constants.CHECK_INIT_KEY,depositData);
@@ -346,9 +347,10 @@ private void setPic() {
 
         int size = chequeList.size();
         for(int i = 0; i<size; i++){
-            mAmountView = ((TextInputLayout)(chequeList.get(i).getChildAt(1))).getEditText();
-            mCheckNoView = ((TextInputLayout)(chequeList.get(i).getChildAt(2))).getEditText();
+            mAmountView = ((TextInputLayout)(chequeList.get(i).getChildAt(2))).getEditText();
+            mCheckNoView = ((TextInputLayout)(chequeList.get(i).getChildAt(1))).getEditText();
             amount = mAmountView.getText().toString();
+           // Log.d("amount value",amount);
             checkNo = mCheckNoView.getText().toString();
             mCheckNoView.setError(null);
             mAmountView.setError(null);
@@ -356,7 +358,7 @@ private void setPic() {
                 mAmountView.setError(getString(R.string.amount_empty));
                 focusView = mAmountView;
                 cancel = true;
-
+               // Log.d("amout val",amount);
             }
             else if(TextUtils.isEmpty(checkNo)){
                 mCheckNoView.setError("Please Enter Check Number");
@@ -379,7 +381,7 @@ private void setPic() {
                 try {
                     JSONObject jObject = new JSONObject(response);
 
-                    showTransactionCompleteDialog();
+                    //showTransactionCompleteDialog();
 
                     printReceipt();
                     showTransactionCompleteDialog();
@@ -605,9 +607,10 @@ private void setPic() {
         EditText amount = new EditText(this);
         amount.setHint("amount");
         amount.setImeOptions(IME_ACTION_UNSPECIFIED);
-        amount.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        amount.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_NUMBER_FLAG_SIGNED);
         amount.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT));
         amount.setMaxLines(1);
+
         amountly.addView(amount);
         cheque.addView(amountly);
 
@@ -800,10 +803,21 @@ private void setPic() {
     }
 
     private void   printReceipt(){
+        SharedPreferences prefs = getSharedPreferences(Constants.PERSONAL_KEY, MODE_PRIVATE);
+
+        String name = prefs.getString(Constants.NAME_KEY,"no_user");//"No name defined" is the default value.
+        String mobile = prefs.getString(Constants.MOBILE_KEY,"000000000");
+        double amount =0.0;
+        int size = chequeList.size();
+        for(int i = 0; i<size; i++) {
+            mAmountView = ((TextInputLayout) (chequeList.get(i).getChildAt(2))).getEditText();
+            amount += Double.parseDouble( mAmountView.getText().toString());
+
+        }
         ICallback callback = null;
         WoyouPrinter woyouPrinter = WoyouPrinter.getInstance();
         woyouPrinter.initPrinter(getApplicationContext());
-        woyouPrinter.print("\nTransaction Type : Cheque Deposit \nAmount : "+this.amount+" : \nAccount No: "+this.accountNo+" \nMobile No : "+this.mobile+"\nReference No : "+this.refNo,callback);
-
+        woyouPrinter.print("\nTransaction Type : Cheque Deposit \nAmount : Rs."+amount+" \nAccount No: "+this.accountNo+" \nMobile No : "+this.mobile+"\nReference No : "+this.refNo+"\ncollector :"+name+"("+mobile+")",callback);
+        Log.d("printcall:",""+amount);
     }
 }
