@@ -63,7 +63,7 @@ public class WoyouPrinter {
 						Bitmap mBitmap1 = BitmapUtils.zoomBitmap(bitmap, 300, 60);
 						woyouService.printBitmap(mBitmap1,callback);
 						woyouService.lineWrap(2, callback);
-
+						woyouService.setAlignment(0, callback);
 //						for(int i=0; i<4; i++){
 							woyouService.printTextWithFont(msg, "", 24, callback);
 //						}

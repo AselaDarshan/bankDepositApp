@@ -30,12 +30,15 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -66,6 +69,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static android.R.attr.description;
 import static android.R.attr.id;
@@ -144,6 +149,7 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
 
         mMobileView = (EditText)findViewById(R.id.mobile);
         mRefNoView = (EditText)findViewById(R.id.refNo);
+        mMobileView.setFilters(new InputFilter[] {new mobileFilter()});
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -647,7 +653,9 @@ private void setPic() {
         amount.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_NUMBER_FLAG_SIGNED);
         amount.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT));
         amount.setMaxLines(1);
-
+        DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat.getInstance();
+       decimalFormat.setMaximumFractionDigits(2);
+        amount.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(2)});
         amountly.addView(amount);
         cheque.addView(amountly);
 
@@ -858,16 +866,20 @@ private void setPic() {
         String mobile = prefs.getString(Constants.MOBILE_KEY,"000000000");
         double amount =0.0;
         int size = chequeList.size();
+        StringBuilder checks = new StringBuilder("\n");
         for(int i = 0; i<size; i++) {
+            mCheckNoView = ((TextInputLayout) (chequeList.get(i).getChildAt(1))).getEditText();
+            checks.append("\nCheck No :"+mCheckNoView.getText().toString());
             mAmountView = ((TextInputLayout) (chequeList.get(i).getChildAt(2))).getEditText();
-            amount += Double.parseDouble( mAmountView.getText().toString());
-
+            checks.append("\nAmount : Rs."+mAmountView.getText().toString()+"\n");
         }
         ICallback callback = null;
         WoyouPrinter woyouPrinter = WoyouPrinter.getInstance();
         woyouPrinter.initPrinter(getApplicationContext());
 
-        woyouPrinter.print("\nTransaction Type : Cheque Deposit \nAmount : Rs."+amount+" \nAccount No: "+this.accountNo+" \nMobile No : "+this.mobile+"\nReference No : "+this.refNo+"\ncollector :"+name+"("+mobile+")",callback);
+        woyouPrinter.print("\nTransaction Type : Cheque Deposit  \nAccount No: "+this.accountNo+""+checks.toString()+" \nMobile No : "+this.mobile+"\nReference No : "+this.refNo+"\ncollector :"+name+"("+mobile+")",callback);
+
+
         Log.d("printcall:",""+amount);
 
     }
@@ -891,6 +903,48 @@ private void setPic() {
         chequeList.remove(index);
         chequeCount = size;
         return 0;
+    }
+    class DecimalDigitsInputFilter implements InputFilter {
+
+        Pattern mPattern;
+
+        public  DecimalDigitsInputFilter(int digitsAfterZero) {
+            mPattern=Pattern.compile("[0-9]+((\\.[0-9]{0," + (digitsAfterZero-1) + "})?)||(\\.)?");
+        }
+        public Pattern MobileCheck(){
+
+            return Pattern.compile("^[0][7][1725860](\\d)*");
+        }
+
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+
+            Matcher matcher=mPattern.matcher(dest);
+            if(!matcher.matches())
+                return "";
+            return null;
+        }
+
+    }
+    class mobileFilter implements InputFilter {
+
+        Pattern mPattern;
+
+
+        public mobileFilter(){
+
+            mPattern = Pattern.compile("[0][7][1725860](\\d)*");
+        }
+
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+
+            Matcher matcher=mPattern.matcher(dest);
+            if(!matcher.matches())
+                return "";
+            return null;
+        }
+
     }
 
 }
