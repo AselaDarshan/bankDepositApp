@@ -2,17 +2,22 @@ package com.siplo.banking.bankdepositapp;
 
 import android.accounts.Account;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.Dimension;
@@ -35,6 +40,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsoluteLayout;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -67,13 +73,34 @@ import static android.R.attr.orientation;
 import static android.R.attr.phoneNumber;
 import static android.text.InputType.TYPE_CLASS_TEXT;
 import static android.view.inputmethod.EditorInfo.IME_ACTION_UNSPECIFIED;
+import static java.security.AccessController.getContext;
 
 import woyou.aidlservice.jiuiv5.ICallback;
+import woyou.aidlservice.jiuiv5.IWoyouService;
 
 public class ChequeDepositActivity extends AppCompatActivity implements InformationDialogFragment.InformationDialogListener {
 
     private final int REQUEST_IMAGE_CAPTURE_FRONT = 0;
     private final int REQUEST_IMAGE_CAPTURE_BACK =1;
+
+    private Bitmap bitmap;
+    private Bitmap bitmap1;
+    private IWoyouService woyouService;
+    private ICallback callback = null;
+    private ServiceConnection connService = new ServiceConnection() {
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+            woyouService = null;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            woyouService = IWoyouService.Stub.asInterface(service);
+
+        }
+    };
 
     private EditText mAccountView;
     private EditText mAmountView;
@@ -100,6 +127,8 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cheque_deposit);
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -144,6 +173,8 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
+
+
         chequeList = new ArrayList<>();
         initializeChequeDepositFrom();
     }
@@ -574,16 +605,20 @@ private void setPic() {
     }
     int chequeCount=1;
     private void addCheque(final LinearLayout chequeContent){
-        CardView card = new CardView(this);
-        LinearLayout cheque =new LinearLayout(this);
 
+        final int index = chequeCount;
+        final CardView card = new CardView(this);
+        LinearLayout cheque =new LinearLayout(this);
 
         cheque.setOrientation(LinearLayout.VERTICAL);
 //      cheque.setId(chequeCount);
-        TextView chequeIndex = new TextView(this);
+        final TextView chequeIndex = new TextView(this);
         chequeIndex.setText( "Cheque "+String.valueOf(chequeCount));
         chequeCount++;
         cheque.addView(chequeIndex);
+
+
+        // add delete button
 
         //checkno
 
@@ -600,6 +635,8 @@ private void setPic() {
         chechno.setMaxLines(1);
         checkly.addView(chechno);
         cheque.addView(checkly);
+
+
 
         TextInputLayout amountly = new TextInputLayout(this);
         amountly.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -683,6 +720,7 @@ private void setPic() {
             }
         });*/
         photovertright.addView(mBackImage);
+
         Button button_back = new Button(this);
         button_back.setText("Back");
         button_back.setTextColor(Color.parseColor("#ffffff"));
@@ -705,6 +743,17 @@ private void setPic() {
         photely.addView(photohorz);
 
         cheque.addView(photely);
+        Button delete = new Button(this);
+        delete.setText("Delete");
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                card.removeAllViews();
+                getRemoveCheck(chequeIndex);
+
+            }
+        });
+        cheque.addView(delete);
 
         View line = new View(this);
         ViewGroup.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT);
@@ -817,7 +866,31 @@ private void setPic() {
         ICallback callback = null;
         WoyouPrinter woyouPrinter = WoyouPrinter.getInstance();
         woyouPrinter.initPrinter(getApplicationContext());
+
         woyouPrinter.print("\nTransaction Type : Cheque Deposit \nAmount : Rs."+amount+" \nAccount No: "+this.accountNo+" \nMobile No : "+this.mobile+"\nReference No : "+this.refNo+"\ncollector :"+name+"("+mobile+")",callback);
         Log.d("printcall:",""+amount);
+
     }
+    public int getRemoveCheck(TextView chequeIndex){
+        boolean find = false;
+        int size = chequeList.size();
+        int index = 0;
+        for(int i = 0; i<size;i++){
+            if(((TextView)(chequeList.get(i).getChildAt(0))).getText().toString().equals(chequeIndex.getText().toString())){
+
+                index =i ;
+                find = true;
+            }
+            if(find){
+                ((TextView)(chequeList.get(i).getChildAt(0))).setText( "Cheque "+String.valueOf(i));
+
+            }
+
+
+        }
+        chequeList.remove(index);
+        chequeCount = size;
+        return 0;
+    }
+
 }

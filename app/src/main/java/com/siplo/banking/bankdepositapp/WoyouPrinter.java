@@ -4,6 +4,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.IBinder;
 import android.os.RemoteException;
 
@@ -14,7 +17,7 @@ public class WoyouPrinter {
 	
 	private static final WoyouPrinter printer = new WoyouPrinter();
 	private IWoyouService woyouService = null;
-	
+	private Resources resources = null;
 	private ServiceConnection connService = new ServiceConnection() {
 
 		@Override
@@ -39,7 +42,8 @@ public class WoyouPrinter {
 		intent.setPackage("woyou.aidlservice.jiuiv5");
 		intent.setAction("woyou.aidlservice.jiuiv5.IWoyouService");
 		context.startService(intent);
-		context.bindService(intent, connService, Context.BIND_AUTO_CREATE);		
+		context.bindService(intent, connService, Context.BIND_AUTO_CREATE);
+		resources = context.getResources();
 	}
 
 	public IWoyouService getWoyouService(){
@@ -52,7 +56,12 @@ public class WoyouPrinter {
 				@Override
 				public void run() {
 					try {
-						woyouService.printTextWithFont("\t\t\tAmana Bank\n", "", 50, callback);
+
+
+						//woyouService.setAlignment(1, callback);
+						Bitmap bitmap = BitmapFactory.decodeResource(resources,R.drawable.logo_full);
+						Bitmap mBitmap1 = BitmapUtils.zoomBitmap(bitmap, 300, 60);
+						woyouService.printBitmap(mBitmap1,callback);
 						woyouService.lineWrap(2, callback);
 
 //						for(int i=0; i<4; i++){

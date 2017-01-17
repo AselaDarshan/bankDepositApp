@@ -46,7 +46,7 @@
     <string name="capture_front">Front</string>
     <string name="capture_back">Back</string>
 
-    <string name="next_cheque">Next</string>
+    <string name="next_cheque">Add</string>
 
     <string name="title_activity_print">PrintActivity</string>
 
