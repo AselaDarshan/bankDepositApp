@@ -170,7 +170,7 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
                         // dont know what to place
 
                         mMobileView.setText("");
-                        mMobileView.setError("invalidnumber (format :07X XXXXXXX)");
+                        mMobileView.setError("Invalid Number (format :07X XXXXXXX)");
 
                     }
 
@@ -185,7 +185,7 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
 
                         mMobileView.setText(text.substring(0,1));
                         mMobileView.setSelection(1);
-                        mMobileView.setError("invalidnumber (format :07X XXXXXXX)");
+                        mMobileView.setError("Invalid Number (format :07X XXXXXXX)");
 
                     }
 
@@ -200,7 +200,7 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
 
                         mMobileView.setText(text.substring(0,2));
                         mMobileView.setSelection(2);
-                        mMobileView.setError("invalidnumber (format :07X XXXXXXX)");
+                        mMobileView.setError("Invalid Number (format :07X XXXXXXX)");
 
                     }
 
