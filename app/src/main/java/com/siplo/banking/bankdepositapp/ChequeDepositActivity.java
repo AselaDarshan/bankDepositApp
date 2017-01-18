@@ -149,7 +149,80 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
 
         mMobileView = (EditText)findViewById(R.id.mobile);
         mRefNoView = (EditText)findViewById(R.id.refNo);
-        mMobileView.setFilters(new InputFilter[] {new mobileFilter()});
+        mMobileView.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count){
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after){
+            }
+            @Override
+            public void afterTextChanged(Editable s)
+            {
+                if(s.length() == 1){
+                    Pattern mPattern = Pattern.compile("^[0]");
+                    String text = s.toString();
+                    Matcher matcher = mPattern.matcher(s.toString());
+                    if (!matcher.matches())
+                    {
+                        // dont know what to place
+
+                        mMobileView.setText("");
+                        mMobileView.setError("invalidnumber (format :07X XXXXXXX)");
+
+                    }
+
+                }
+                if(s.length() == 2){
+                    Pattern mPattern = Pattern.compile("^[0][7]");
+                    String text = s.toString();
+                    Matcher matcher = mPattern.matcher(s.toString());
+                    if (!matcher.matches())
+                    {
+                        // dont know what to place
+
+                        mMobileView.setText(text.substring(0,1));
+                        mMobileView.setSelection(1);
+                        mMobileView.setError("invalidnumber (format :07X XXXXXXX)");
+
+                    }
+
+                }
+                if(s.length() == 3){
+                    Pattern mPattern = Pattern.compile("^[0][7][0125678]");
+                    String text = s.toString();
+                    Matcher matcher = mPattern.matcher(s.toString());
+                    if (!matcher.matches())
+                    {
+                        // dont know what to place
+
+                        mMobileView.setText(text.substring(0,2));
+                        mMobileView.setSelection(2);
+                        mMobileView.setError("invalidnumber (format :07X XXXXXXX)");
+
+                    }
+
+                }
+                if(s.length() <= 10 && s.length() > 3){
+                    Pattern mPattern = Pattern.compile("^[0][7][1250678](\\d)*$");
+                    String text = s.toString();
+                    Matcher matcher = mPattern.matcher(s.toString());
+                    if (!matcher.matches())
+                    {
+                        // dont know what to place
+
+
+
+
+                    }
+
+                }
+
+
+            }
+        });
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -653,8 +726,7 @@ private void setPic() {
         amount.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_NUMBER_FLAG_SIGNED);
         amount.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT));
         amount.setMaxLines(1);
-        DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat.getInstance();
-       decimalFormat.setMaximumFractionDigits(2);
+        
         amount.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(2)});
         amountly.addView(amount);
         cheque.addView(amountly);
@@ -911,10 +983,7 @@ private void setPic() {
         public  DecimalDigitsInputFilter(int digitsAfterZero) {
             mPattern=Pattern.compile("[0-9]+((\\.[0-9]{0," + (digitsAfterZero-1) + "})?)||(\\.)?");
         }
-        public Pattern MobileCheck(){
 
-            return Pattern.compile("^[0][7][1725860](\\d)*");
-        }
 
         @Override
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
@@ -933,7 +1002,7 @@ private void setPic() {
 
         public mobileFilter(){
 
-            mPattern = Pattern.compile("[0][7][1725860](\\d)*");
+            mPattern = Pattern.compile("^[0]");
         }
 
         @Override
