@@ -286,7 +286,7 @@ public class cashDepositActivity extends AppCompatActivity {
         ICallback callback = null;
         WoyouPrinter woyouPrinter = WoyouPrinter.getInstance();
         woyouPrinter.initPrinter(getApplicationContext());
-        woyouPrinter.print("\nTransaction Type : Cash Deposit \nAmount : "+this.amount+" : \nAccount No: "+this.accountNo+" \nMobile No : "+this.mobile+"\nReference No : "+this.refNo,callback);
+        woyouPrinter.print("\nTransaction Type : Cash Deposit \nAmount : "+this.amount+" LKR \nAccount No: "+this.accountNo+" \nMobile No : "+this.mobile+"\nReference No : "+this.refNo,callback);
 
     }
     public void currencyFormatValidation(){
