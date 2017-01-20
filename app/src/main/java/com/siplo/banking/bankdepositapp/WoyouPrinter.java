@@ -60,7 +60,7 @@ public class WoyouPrinter {
 
 						//woyouService.setAlignment(1, callback);
 						Bitmap bitmap = BitmapFactory.decodeResource(resources,R.drawable.logo_full);
-						Bitmap mBitmap1 = BitmapUtils.zoomBitmap(bitmap, 300, 60);
+						Bitmap mBitmap1 = BitmapUtils.zoomBitmap(bitmap, 390, 65);
 						woyouService.printBitmap(mBitmap1,callback);
 						woyouService.lineWrap(2, callback);
 						woyouService.setAlignment(0, callback);

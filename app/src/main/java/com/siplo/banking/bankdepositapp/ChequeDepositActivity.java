@@ -67,8 +67,10 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -76,6 +78,7 @@ import static android.R.attr.description;
 import static android.R.attr.id;
 import static android.R.attr.orientation;
 import static android.R.attr.phoneNumber;
+import static android.R.attr.value;
 import static android.text.InputType.TYPE_CLASS_TEXT;
 import static android.view.inputmethod.EditorInfo.IME_ACTION_UNSPECIFIED;
 import static java.security.AccessController.getContext;
@@ -150,7 +153,67 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
         mMobileView = (EditText)findViewById(R.id.mobile);
         mRefNoView = (EditText)findViewById(R.id.refNo);
 
-        
+        mobileNumberValidation();
+
+
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+////                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+////                        .setAction("Action", null).show();
+//                dispatchTakePictureIntent();
+//            }
+//        });
+
+
+        // The filter's action is BROADCAST_ACTION
+        IntentFilter mStatusIntentFilter = new IntentFilter(
+                Constants.BROADCAST_ACTION);
+
+
+        // Registers the DownloadStateReceiver and its intent filters
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                mMessageReceiver,
+                mStatusIntentFilter);
+
+        //show back icon in titile bar
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
+
+        chequeList = new ArrayList<>();
+        initializeChequeDepositFrom();
+    }
+
+
+    public void captureFront(View view){
+        dispatchTakePictureIntent(REQUEST_IMAGE_CAPTURE_FRONT);
+    }
+    public void captureBack(View view){
+        dispatchTakePictureIntent(REQUEST_IMAGE_CAPTURE_BACK);
+    }
+    public void proceedCashDeposit(View view){
+
+        if(validateInputs()){
+            Log.d("cheque_deposit","precessing deposit");
+            sendDataToServer();
+        }
+
+    }
+
+
+
+
+
+
+
+    private void mobileNumberValidation(){
+
         mMobileView.addTextChangedListener(new TextWatcher()
         {
             @Override
@@ -225,54 +288,6 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
 
             }
         });
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-////                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-////                        .setAction("Action", null).show();
-//                dispatchTakePictureIntent();
-//            }
-//        });
-
-
-        // The filter's action is BROADCAST_ACTION
-        IntentFilter mStatusIntentFilter = new IntentFilter(
-                Constants.BROADCAST_ACTION);
-
-
-        // Registers the DownloadStateReceiver and its intent filters
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                mMessageReceiver,
-                mStatusIntentFilter);
-
-        //show back icon in titile bar
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        if(getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
-
-
-        chequeList = new ArrayList<>();
-        initializeChequeDepositFrom();
-    }
-
-    public void captureFront(View view){
-        dispatchTakePictureIntent(REQUEST_IMAGE_CAPTURE_FRONT);
-    }
-    public void captureBack(View view){
-        dispatchTakePictureIntent(REQUEST_IMAGE_CAPTURE_BACK);
-    }
-    public void proceedCashDeposit(View view){
-
-        if(validateInputs()){
-            Log.d("cheque_deposit","precessing deposit");
-            sendDataToServer();
-        }
-
     }
 
     private void sendDataToServer(){
@@ -708,12 +723,13 @@ private void setPic() {
 
         EditText chechno = new EditText(this);
         //chechno.setId(R.id.checkNo);
-        chechno.setHint("check no");
+        chechno.setHint("cheque no");
         //chechno.setImeActionLabel("@string/action_sign_in_short",R.id.checkNo);
         chechno.setImeOptions(IME_ACTION_UNSPECIFIED);
         chechno.setInputType(InputType.TYPE_CLASS_NUMBER);
         chechno.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT));
         chechno.setMaxLines(1);
+        chechno.setFilters(new InputFilter[] {new InputFilter.LengthFilter(6)});
         checkly.addView(chechno);
         cheque.addView(checkly);
 
@@ -722,14 +738,45 @@ private void setPic() {
         TextInputLayout amountly = new TextInputLayout(this);
         amountly.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT));
 
-        EditText amount = new EditText(this);
+        final EditText amount = new EditText(this);
         amount.setHint("amount");
         amount.setImeOptions(IME_ACTION_UNSPECIFIED);
         amount.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_NUMBER_FLAG_SIGNED);
         amount.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT));
-        amount.setMaxLines(1);
-        
-        amount.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(2)});
+        //amount.setMaxLines(1);
+
+        amount.addTextChangedListener(new TextWatcher(){
+            DecimalFormat dec = new DecimalFormat("0.00");
+            @Override
+            public void afterTextChanged(Editable arg0) {
+
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+            private String current = "";
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(!s.toString().equals(current)){
+                    amount.removeTextChangedListener(this);
+
+                    String cleanString = s.toString().replaceAll("[$,. LKR]", "");
+
+                    double parsed = Double.parseDouble(cleanString);
+                    String formatted = NumberFormat.getCurrencyInstance().format((parsed/100));
+
+                    formatted=formatted.replaceAll("[$]", "")+" LKR";
+                    current = formatted;
+                    amount.setText(formatted);
+                    amount.setSelection(formatted.length()-4);
+
+                    amount.addTextChangedListener(this);
+                }
+            }
+        });
+
+        //amount.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(2)});
         amountly.addView(amount);
         cheque.addView(amountly);
 
