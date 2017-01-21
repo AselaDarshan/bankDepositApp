@@ -304,10 +304,12 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
                 for (int i =0;i<size;i++){
                     JSONObject tempCheckData = new JSONObject();
 
-                    tempCheckData.put(Constants.AMOUNT_KEY,((TextInputLayout)(chequeList.get(i).getChildAt(2))).getEditText().getText());
+                    tempCheckData.put(Constants.AMOUNT_KEY,Double.parseDouble(((TextInputLayout)(chequeList.get(i).getChildAt(2))).getEditText().getText().toString().replaceAll("[$, LKR]", "")) );
 
-
+                    //Double.parseDouble(((EditText)cheque.getChildAt(4)).getText().toString().replaceAll("[$, LKR]", ""));
                     tempCheckData.put(Constants.CHECK_NO_KEY,((TextInputLayout)(chequeList.get(i).getChildAt(1))).getEditText().getText());
+
+
                     depositCheckDatas.put(tempCheckData);
                 }
                 checks.put(Constants.CHECK_INIT_KEY,depositData);
