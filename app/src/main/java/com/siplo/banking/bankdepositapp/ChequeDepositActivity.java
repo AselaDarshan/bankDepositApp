@@ -149,6 +149,8 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
 
         mMobileView = (EditText)findViewById(R.id.mobile);
         mRefNoView = (EditText)findViewById(R.id.refNo);
+
+        
         mMobileView.addTextChangedListener(new TextWatcher()
         {
             @Override
