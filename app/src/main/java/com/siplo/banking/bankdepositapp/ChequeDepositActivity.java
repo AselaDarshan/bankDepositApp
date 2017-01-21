@@ -214,23 +214,30 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
         dispatchTakePictureIntent(REQUEST_IMAGE_CAPTURE_BACK);
     }
     public void proceedCashDeposit(View view){
-
-        if(validateInputs()){
+        uploadImages();
+       /* if(validateInputs()){
             Log.d("cheque_deposit","precessing deposit");
             sendDataToServer();
-        }
+            //uploadImage();
+        }*/
 
     }
 
 
+    private void uploadImages(){
+        int size = chequeList.size();
+        for (int i =0;i<size;i++){
 
+            uploadImage(i);
+        }
+    }
 
-    private void uploadImage(){
+    private void uploadImage(final int i){
         //Showing the progress dialog
         Bitmap bip = null;
         final ProgressDialog loading = ProgressDialog.show(this,"Uploading...","Please wait...",false,false);
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.SERVER_URL+Constants.CHEQUE_IMAGE_UPLOAD_ROUTE,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String s) {
@@ -238,6 +245,7 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
                         loading.dismiss();
                         //Showing toast message of the response
                         Toast.makeText(ChequeDepositActivity.this, s , Toast.LENGTH_LONG).show();
+                        Log.d("error1",s);
                     }
                 },
                 new Response.ErrorListener() {
@@ -248,6 +256,7 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
 
                         //Showing toast
                         Toast.makeText(ChequeDepositActivity.this, volleyError.getMessage().toString(), Toast.LENGTH_LONG).show();
+                        Log.d("error2",volleyError.getMessage().toString());
                     }
                 }){
             @Override
@@ -256,7 +265,7 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
 
 
                 //Creating parameters
-                Map<String,String> params = imagepacking();
+                Map<String,String> params = imagepacking(i);
 
                 //Adding parameters
 
@@ -272,29 +281,30 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
         //Adding request to the queue
         requestQueue.add(stringRequest);
     }
-    public Map<String,String>imagepacking(){
+    public Map<String,String>imagepacking(int i){
 
         Map<String,String> params = new Hashtable<String, String>();
 
-        Bitmap bmp = null;
-        String image = getStringImage(bmp);
-        int size = chequeList.size();
-        for (int i =0;i<size;i++){
+
 
 
             String KEY_NAME =((TextInputLayout)(chequeList.get(i).getChildAt(1))).getEditText().getText().toString();
 
 
             Bitmap front = ((BitmapDrawable)((ImageView) ((LinearLayout) ((LinearLayout)((LinearLayout)(chequeList.get(i).getChildAt(3))).getChildAt(1)).getChildAt(0)).getChildAt(0)).getDrawable()).getBitmap();
-            String KEY_IMAGE = getStringImage(front);
+           Bitmap Back = ((BitmapDrawable)((ImageView) ((LinearLayout) ((LinearLayout)((LinearLayout)(chequeList.get(i).getChildAt(3))).getChildAt(1)).getChildAt(1)).getChildAt(0)).getDrawable()).getBitmap();
 
-        }
-        //Getting Image Name
-        String name= "test";
-        String KEY_IMAGE = "image";
+            String KEY_IMAGE_FRONT = getStringImage(front);
+            String KEY_IMAGE_BACK = getStringImage(Back);
+            params.put("REF_NO",mRefNoView.getText().toString());
+            params.put("CHE_NO",KEY_NAME);
+            params.put("FRONT", KEY_IMAGE_FRONT);
+        params.put("BACK", KEY_IMAGE_BACK);
+            //params.put(KEY_NAME+"-1", KEY_IMAGE_BACK);
 
-        //params.put(KEY_IMAGE, image);
-        //params.put(KEY_NAME, name);
+
+
+
         return params;
     }
     public String getStringImage(Bitmap bmp){
@@ -403,18 +413,11 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
 
                     tempCheckData.put(Constants.AMOUNT_KEY,Double.parseDouble(((TextInputLayout)(chequeList.get(i).getChildAt(2))).getEditText().getText().toString().replaceAll("[$, LKR]", "")) );
 
-                    //Double.parseDouble(((EditText)cheque.getChildAt(4)).getText().toString().replaceAll("[$, LKR]", ""));
                     tempCheckData.put(Constants.CHECK_NO_KEY,((TextInputLayout)(chequeList.get(i).getChildAt(1))).getEditText().getText());
 
 
                     depositCheckDatas.put(tempCheckData);
 
-                    String KEY_NAME =((TextInputLayout)(chequeList.get(i).getChildAt(1))).getEditText().getText().toString();
-
-
-                    Bitmap front = ((BitmapDrawable)((ImageView) ((LinearLayout) ((LinearLayout)((LinearLayout)(chequeList.get(i).getChildAt(3))).getChildAt(1)).getChildAt(0)).getChildAt(0)).getDrawable()).getBitmap();
-                    String KEY_IMAGE = getStringImage(front);
-                    Log.d("Keyiamge : " ,"Image :"+ KEY_NAME + " : " +KEY_IMAGE);
 
                 }
                 checks.put(Constants.CHECK_INIT_KEY,depositData);
