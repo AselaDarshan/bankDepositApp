@@ -401,10 +401,12 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
                 for (int i =0;i<size;i++){
                     JSONObject tempCheckData = new JSONObject();
 
-                    tempCheckData.put(Constants.AMOUNT_KEY,((TextInputLayout)(chequeList.get(i).getChildAt(2))).getEditText().getText());
+                    tempCheckData.put(Constants.AMOUNT_KEY,Double.parseDouble(((TextInputLayout)(chequeList.get(i).getChildAt(2))).getEditText().getText().toString().replaceAll("[$, LKR]", "")) );
 
-
+                    //Double.parseDouble(((EditText)cheque.getChildAt(4)).getText().toString().replaceAll("[$, LKR]", ""));
                     tempCheckData.put(Constants.CHECK_NO_KEY,((TextInputLayout)(chequeList.get(i).getChildAt(1))).getEditText().getText());
+
+
                     depositCheckDatas.put(tempCheckData);
 
                     String KEY_NAME =((TextInputLayout)(chequeList.get(i).getChildAt(1))).getEditText().getText().toString();
@@ -1096,13 +1098,15 @@ private void setPic() {
             mCheckNoView = ((TextInputLayout) (chequeList.get(i).getChildAt(1))).getEditText();
             checks.append("\nCheck No :"+mCheckNoView.getText().toString());
             mAmountView = ((TextInputLayout) (chequeList.get(i).getChildAt(2))).getEditText();
-            checks.append("\nAmount : Rs."+mAmountView.getText().toString()+"\n");
+            checks.append("\nAmount : "+mAmountView.getText().toString()+"\n");
         }
         ICallback callback = null;
         WoyouPrinter woyouPrinter = WoyouPrinter.getInstance();
         woyouPrinter.initPrinter(getApplicationContext());
 
-        woyouPrinter.print("\nTransaction Type : Cheque Deposit  \nAccount No: "+this.accountNo+""+checks.toString()+" \nMobile No : "+this.mobile+"\nReference No : "+this.refNo+"\ncollector :"+name+"("+mobile+")",callback);
+        woyouPrinter.print("\nTransaction Type : Cheque Deposit  \nAccount No: "+this.accountNo+""+checks.toString()+" \nMobile No : "+this.mobile+"\nReference No : "+this.refNo+"\ncollector :"+name+"("+mobile+")"+"\n\nCheque deposit and collections "+"\nare subject to realize and for"+"\nany clarification contact\n" +
+                "Samaraweera\n" +
+                "(071 589 4578/ ID: 148458) ",callback);
 
 
         Log.d("printcall:",""+amount);

@@ -3,7 +3,6 @@ package com.siplo.banking.bankdepositapp;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.ActionBar;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,12 +10,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +24,11 @@ import android.widget.EditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import woyou.aidlservice.jiuiv5.ICallback;
 
@@ -56,6 +61,9 @@ public class cashDepositActivity extends AppCompatActivity {
 
         mFormView = findViewById(R.id.deposit_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        mobileNumberValidation();
+        currencyFormatValidation();
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -116,7 +124,10 @@ public class cashDepositActivity extends AppCompatActivity {
     public boolean validateInputs(){
         // Store values at the time of the login attempt.
         accountNo = mAccountView.getText().toString();
-        amount =  mAmountView.getText().toString();
+
+        amount =  Double.parseDouble(mAmountView.getText().toString().replaceAll("[$, LKR]", ""))+"";
+        Log.d("Amount : ",amount);
+        //Double.parseDouble(((EditText)cheque.getChildAt(4)).getText().toString().replaceAll("[$, LKR]", ""));
         mobile = mMobileView.getText().toString();
         refNo = mRefNoView.getText().toString();
         // Reset errors.
@@ -275,7 +286,117 @@ public class cashDepositActivity extends AppCompatActivity {
         ICallback callback = null;
         WoyouPrinter woyouPrinter = WoyouPrinter.getInstance();
         woyouPrinter.initPrinter(getApplicationContext());
-        woyouPrinter.print("\nTransaction Type : Cash Deposit \nAmount : "+this.amount+" : \nAccount No: "+this.accountNo+" \nMobile No : "+this.mobile+"\nReference No : "+this.refNo,callback);
+        woyouPrinter.print("\nTransaction Type : Cash Deposit \nAmount : "+this.amount+" LKR \nAccount No: "+this.accountNo+" \nMobile No : "+this.mobile+"\nReference No : "+this.refNo,callback);
 
+    }
+    public void currencyFormatValidation(){
+
+        mAmountView.addTextChangedListener(new TextWatcher(){
+            DecimalFormat dec = new DecimalFormat("0.00");
+            @Override
+            public void afterTextChanged(Editable arg0) {
+
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+            private String current = "";
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(!s.toString().equals(current)){
+                    mAmountView.removeTextChangedListener(this);
+
+                    String cleanString = s.toString().replaceAll("[$,. LKR]", "");
+
+                    double parsed = Double.parseDouble(cleanString);
+                    String formatted = NumberFormat.getCurrencyInstance().format((parsed/100));
+
+                    formatted=formatted.replaceAll("[$]", "")+" LKR";
+                    current = formatted;
+                    mAmountView.setText(formatted);
+                    mAmountView.setSelection(formatted.length()-4);
+
+                    mAmountView.addTextChangedListener(this);
+                }
+            }
+        });
+    }
+    private void mobileNumberValidation(){
+
+        mMobileView.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count){
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after){
+            }
+            @Override
+            public void afterTextChanged(Editable s)
+            {
+                if(s.length() == 1){
+                    Pattern mPattern = Pattern.compile("^[0]");
+                    String text = s.toString();
+                    Matcher matcher = mPattern.matcher(s.toString());
+                    if (!matcher.matches())
+                    {
+                        // dont know what to place
+
+                        mMobileView.setText("");
+                        mMobileView.setError("Invalid Number (format :07X XXXXXXX)");
+
+                    }
+
+                }
+                if(s.length() == 2){
+                    Pattern mPattern = Pattern.compile("^[0][7]");
+                    String text = s.toString();
+                    Matcher matcher = mPattern.matcher(s.toString());
+                    if (!matcher.matches())
+                    {
+                        // dont know what to place
+
+                        mMobileView.setText(text.substring(0,1));
+                        mMobileView.setSelection(1);
+                        mMobileView.setError("Invalid Number (format :07X XXXXXXX)");
+
+                    }
+
+                }
+                if(s.length() == 3){
+                    Pattern mPattern = Pattern.compile("^[0][7][0125678]");
+                    String text = s.toString();
+                    Matcher matcher = mPattern.matcher(s.toString());
+                    if (!matcher.matches())
+                    {
+                        // dont know what to place
+
+                        mMobileView.setText(text.substring(0,2));
+                        mMobileView.setSelection(2);
+                        mMobileView.setError("Invalid Number (format :07X XXXXXXX)");
+
+                    }
+
+                }
+                if(s.length() <= 10 && s.length() > 3){
+                    Pattern mPattern = Pattern.compile("^[0][7][1250678](\\d)*$");
+                    String text = s.toString();
+                    Matcher matcher = mPattern.matcher(s.toString());
+                    if (!matcher.matches())
+                    {
+                        // dont know what to place
+
+
+
+
+                    }
+
+                }
+
+
+            }
+        });
     }
 }
