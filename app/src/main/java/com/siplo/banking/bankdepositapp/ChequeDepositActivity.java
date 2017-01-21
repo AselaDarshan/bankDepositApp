@@ -847,7 +847,7 @@ private void setPic() {
         final EditText amount = new EditText(this);
         amount.setHint("amount");
         amount.setImeOptions(IME_ACTION_UNSPECIFIED);
-        amount.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_NUMBER_FLAG_SIGNED);
+        amount.setInputType(InputType.TYPE_CLASS_NUMBER);
         amount.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT));
         //amount.setMaxLines(1);
 
@@ -867,12 +867,12 @@ private void setPic() {
                 if(!s.toString().equals(current)){
                     amount.removeTextChangedListener(this);
 
-                    String cleanString = s.toString().replaceAll("[$,. LKR]", "");
+                    String cleanString = s.toString().replaceAll("[^\\d]", "");
 
                     double parsed = Double.parseDouble(cleanString);
                     String formatted = NumberFormat.getCurrencyInstance().format((parsed/100));
 
-                    formatted=formatted.replaceAll("[$]", "")+" LKR";
+                    formatted=formatted.replaceAll("[^\\d.,]", "")+" LKR";
                     current = formatted;
                     amount.setText(formatted);
                     amount.setSelection(formatted.length()-4);
