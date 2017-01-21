@@ -1,6 +1,7 @@
 package com.siplo.banking.bankdepositapp;
 
 import android.accounts.Account;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,6 +13,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -54,6 +56,15 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.support.v7.widget.CardView;
+import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -69,8 +80,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -95,6 +108,9 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
     private Bitmap bitmap1;
     private IWoyouService woyouService;
     private ICallback callback = null;
+
+
+    private String UPLOAD_URL;
     private ServiceConnection connService = new ServiceConnection() {
 
         @Override
@@ -209,7 +225,86 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
 
 
 
+    private void uploadImage(){
+        //Showing the progress dialog
+        Bitmap bip = null;
+        final ProgressDialog loading = ProgressDialog.show(this,"Uploading...","Please wait...",false,false);
 
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String s) {
+                        //Disimissing the progress dialog
+                        loading.dismiss();
+                        //Showing toast message of the response
+                        Toast.makeText(ChequeDepositActivity.this, s , Toast.LENGTH_LONG).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        //Dismissing the progress dialog
+                        loading.dismiss();
+
+                        //Showing toast
+                        Toast.makeText(ChequeDepositActivity.this, volleyError.getMessage().toString(), Toast.LENGTH_LONG).show();
+                    }
+                }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                //Converting Bitmap to String
+
+
+                //Creating parameters
+                Map<String,String> params = imagepacking();
+
+                //Adding parameters
+
+
+                //returning parameters
+                return params;
+            }
+        };
+
+        //Creating a Request Queue
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        //Adding request to the queue
+        requestQueue.add(stringRequest);
+    }
+    public Map<String,String>imagepacking(){
+
+        Map<String,String> params = new Hashtable<String, String>();
+
+        Bitmap bmp = null;
+        String image = getStringImage(bmp);
+        int size = chequeList.size();
+        for (int i =0;i<size;i++){
+
+
+            String KEY_NAME =((TextInputLayout)(chequeList.get(i).getChildAt(1))).getEditText().getText().toString();
+
+
+            Bitmap front = ((BitmapDrawable)((ImageView) ((LinearLayout) ((LinearLayout)((LinearLayout)(chequeList.get(i).getChildAt(3))).getChildAt(1)).getChildAt(0)).getChildAt(0)).getDrawable()).getBitmap();
+            String KEY_IMAGE = getStringImage(front);
+
+        }
+        //Getting Image Name
+        String name= "test";
+        String KEY_IMAGE = "image";
+
+        //params.put(KEY_IMAGE, image);
+        //params.put(KEY_NAME, name);
+        return params;
+    }
+    public String getStringImage(Bitmap bmp){
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        return encodedImage;
+    }
 
 
     private void mobileNumberValidation(){
@@ -291,6 +386,8 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
     }
 
     private void sendDataToServer(){
+
+
         JSONArray depositCheckDatas = new JSONArray();
         JSONObject depositData = new JSONObject();
         JSONObject checks = new JSONObject();
@@ -309,6 +406,14 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
 
                     tempCheckData.put(Constants.CHECK_NO_KEY,((TextInputLayout)(chequeList.get(i).getChildAt(1))).getEditText().getText());
                     depositCheckDatas.put(tempCheckData);
+
+                    String KEY_NAME =((TextInputLayout)(chequeList.get(i).getChildAt(1))).getEditText().getText().toString();
+
+
+                    Bitmap front = ((BitmapDrawable)((ImageView) ((LinearLayout) ((LinearLayout)((LinearLayout)(chequeList.get(i).getChildAt(3))).getChildAt(1)).getChildAt(0)).getChildAt(0)).getDrawable()).getBitmap();
+                    String KEY_IMAGE = getStringImage(front);
+                    Log.d("Keyiamge : " ,"Image :"+ KEY_NAME + " : " +KEY_IMAGE);
+
                 }
                 checks.put(Constants.CHECK_INIT_KEY,depositData);
                 checks.put(Constants.CHECKS,depositCheckDatas);
@@ -712,7 +817,6 @@ private void setPic() {
         chequeIndex.setText( "Cheque "+String.valueOf(chequeCount));
         chequeCount++;
         cheque.addView(chequeIndex);
-
 
         // add delete button
 
