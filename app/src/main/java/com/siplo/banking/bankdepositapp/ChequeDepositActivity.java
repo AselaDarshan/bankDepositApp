@@ -59,9 +59,12 @@ import android.support.v7.widget.CardView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -80,6 +83,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
@@ -214,13 +218,94 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
         dispatchTakePictureIntent(REQUEST_IMAGE_CAPTURE_BACK);
     }
     public void proceedCashDeposit(View view){
-        uploadImages();
-       /* if(validateInputs()){
+
+        if(validateInputs()){
             Log.d("cheque_deposit","precessing deposit");
             sendDataToServer();
-            //uploadImage();
-        }*/
+            uploadImages();
+        }
 
+    }
+    private void uploadImage(final int i) {
+        // loading or check internet connection or something...
+        // ... then
+
+        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, Constants.SERVER_URL+Constants.CHEQUE_IMAGE_UPLOAD_ROUTE, new Response.Listener<NetworkResponse>() {
+            @Override
+            public void onResponse(NetworkResponse response) {
+                String resultResponse = new String(response.data);
+                try {
+                    JSONObject result = new JSONObject(resultResponse);
+                    String status = result.getString("status");
+                    String message = result.getString("message");
+
+                    if (status.equals(Constants.REQUEST_SUCCESS)) {
+                        // tell everybody you have succed upload image and post strings
+                        Log.i("Messsage", message);
+                    } else {
+                        Log.i("Unexpected", message);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                NetworkResponse networkResponse = error.networkResponse;
+                String errorMessage = "Unknown error";
+                if (networkResponse == null) {
+                    if (error.getClass().equals(TimeoutError.class)) {
+                        errorMessage = "Request timeout";
+                    } else if (error.getClass().equals(NoConnectionError.class)) {
+                        errorMessage = "Failed to connect server";
+                    }
+                } else {
+                    String result = new String(networkResponse.data);
+                    try {
+                        JSONObject response = new JSONObject(result);
+                        String status = response.getString("status");
+                        String message = response.getString("message");
+
+                        Log.e("Error Status", status);
+                        Log.e("Error Message", message);
+
+                        if (networkResponse.statusCode == 404) {
+                            errorMessage = "Resource not found";
+                        } else if (networkResponse.statusCode == 401) {
+                            errorMessage = message+" Please login again";
+                        } else if (networkResponse.statusCode == 400) {
+                            errorMessage = message+ " Check your inputs";
+                        } else if (networkResponse.statusCode == 500) {
+                            errorMessage = message+" Something is getting wrong";
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Log.i("Error", errorMessage);
+                error.printStackTrace();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = imagepacking(i);
+                return params;
+            }
+
+            @Override
+            protected Map<String, DataPart> getByteData() {
+                Map<String, DataPart> params = new HashMap<>();
+                // file name could found file base or direct access from real path
+                // for now just get bitmap data from ImageView
+                params.put("front", new DataPart("Front.jpg", AppHelper.getFileDataFromDrawable(getBaseContext(), ((BitmapDrawable)((ImageView) ((LinearLayout) ((LinearLayout)((LinearLayout)(chequeList.get(i).getChildAt(3))).getChildAt(1)).getChildAt(0)).getChildAt(0)).getDrawable())), "image/jpeg"));
+               params.put("back", new DataPart("back.jpg", AppHelper.getFileDataFromDrawable(getBaseContext(),((BitmapDrawable)((ImageView) ((LinearLayout) ((LinearLayout)((LinearLayout)(chequeList.get(i).getChildAt(3))).getChildAt(1)).getChildAt(1)).getChildAt(0)).getDrawable())), "image/jpeg"));
+
+                return params;
+            }
+        };
+
+        VolleySingleton.getInstance(getBaseContext()).addToRequestQueue(multipartRequest);
     }
 
 
@@ -232,7 +317,7 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
         }
     }
 
-    private void uploadImage(final int i){
+    private void uploadImageTest(final int i){
         //Showing the progress dialog
         Bitmap bip = null;
         final ProgressDialog loading = ProgressDialog.show(this,"Uploading...","Please wait...",false,false);
