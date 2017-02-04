@@ -39,6 +39,7 @@ public class cashDepositActivity extends AppCompatActivity {
     private EditText mMobileView;
     private EditText mRefNoView;
     private EditText mNicView;
+    private EditText mNarrView;
 
     private View mProgressView;
     private View mFormView;
@@ -48,6 +49,7 @@ public class cashDepositActivity extends AppCompatActivity {
     private String mobile;
     private String refNo;
     private String nic;
+    private String narr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,7 @@ public class cashDepositActivity extends AppCompatActivity {
         mMobileView = (EditText)findViewById(R.id.mobile);
         mRefNoView = (EditText)findViewById(R.id.refNo);
         mNicView = (EditText) findViewById(R.id.nic);
+        mNarrView = (EditText) findViewById(R.id.narr);
         mFormView = findViewById(R.id.deposit_form);
         mProgressView = findViewById(R.id.login_progress);
 
@@ -119,6 +122,7 @@ public class cashDepositActivity extends AppCompatActivity {
             depositData.put(Constants.MOBILE_KEY,mobile);
             depositData.put(Constants.REF_NO_KEY,refNo);
             depositData.put(Constants.NIC_KEY,nic);
+            depositData.put(Constants.NARR_KEY,narr);
 
         }catch (JSONException e){
             Log.e("cash_deposit","jason error: "+e);
@@ -137,13 +141,14 @@ public class cashDepositActivity extends AppCompatActivity {
         mobile = mMobileView.getText().toString();
         refNo = mRefNoView.getText().toString();
         nic = mNicView.getText().toString();
+        narr = mNarrView.getText().toString();
         // Reset errors.
         mAccountView.setError(null);
         mAmountView.setError(null);
         mMobileView.setError(null);
         mRefNoView.setError(null);
         mNicView.setError(null);
-
+        mNarrView.setError(null);
 
 
 
