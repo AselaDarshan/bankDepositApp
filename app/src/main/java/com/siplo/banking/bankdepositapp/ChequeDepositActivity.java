@@ -138,7 +138,8 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
     private ImageView mFrontImageView;
     private ImageView mBackImageView;
     private ImageView mImageView;
-
+    private EditText mNicView;
+    private EditText mNarrView;
 
 
 
@@ -147,6 +148,9 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
     private String mobile;
     private String refNo;
     private String checkNo;
+    private String nic;
+    private String narr;
+
 
     LayoutInflater inflater;
     LinearLayout formContainer;
@@ -172,9 +176,11 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
 
         mMobileView = (EditText)findViewById(R.id.mobile);
         mRefNoView = (EditText)findViewById(R.id.refNo);
+        mNicView = (EditText) findViewById(R.id.nic);
+        mNarrView = (EditText) findViewById(R.id.narr);
 
         mobileNumberValidation();
-
+        nicFormatValidation();
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -317,55 +323,55 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
         }
     }
 
-    private void uploadImageTest(final int i){
-        //Showing the progress dialog
-        Bitmap bip = null;
-        final ProgressDialog loading = ProgressDialog.show(this,"Uploading...","Please wait...",false,false);
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.SERVER_URL+Constants.CHEQUE_IMAGE_UPLOAD_ROUTE,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String s) {
-                        //Disimissing the progress dialog
-                        loading.dismiss();
-                        //Showing toast message of the response
-                        Toast.makeText(ChequeDepositActivity.this, s , Toast.LENGTH_LONG).show();
-                        Log.d("error1",s);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        //Dismissing the progress dialog
-                        loading.dismiss();
-
-                        //Showing toast
-                        Toast.makeText(ChequeDepositActivity.this, volleyError.getMessage().toString(), Toast.LENGTH_LONG).show();
-                        Log.d("error2",volleyError.getMessage().toString());
-                    }
-                }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                //Converting Bitmap to String
-
-
-                //Creating parameters
-                Map<String,String> params = imagepacking(i);
-
-                //Adding parameters
-
-
-                //returning parameters
-                return params;
-            }
-        };
-
-        //Creating a Request Queue
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-
-        //Adding request to the queue
-        requestQueue.add(stringRequest);
-    }
+//    private void uploadImageTest(final int i){
+//        //Showing the progress dialog
+//        Bitmap bip = null;
+//        final ProgressDialog loading = ProgressDialog.show(this,"Uploading...","Please wait...",false,false);
+//
+//        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.SERVER_URL+Constants.CHEQUE_IMAGE_UPLOAD_ROUTE,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String s) {
+//                        //Disimissing the progress dialog
+//                        loading.dismiss();
+//                        //Showing toast message of the response
+//                        Toast.makeText(ChequeDepositActivity.this, s , Toast.LENGTH_LONG).show();
+//                        Log.d("error1",s);
+//                    }
+//                },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError volleyError) {
+//                        //Dismissing the progress dialog
+//                        loading.dismiss();
+//
+//                        //Showing toast
+//                        Toast.makeText(ChequeDepositActivity.this, volleyError.getMessage().toString(), Toast.LENGTH_LONG).show();
+//                        Log.d("error2",volleyError.getMessage().toString());
+//                    }
+//                }){
+//            @Override
+//            protected Map<String, String> getParams() throws AuthFailureError {
+//                //Converting Bitmap to String
+//
+//
+//                //Creating parameters
+//                Map<String,String> params = imagepacking(i);
+//
+//                //Adding parameters
+//
+//
+//                //returning parameters
+//                return params;
+//            }
+//        };
+//
+//        //Creating a Request Queue
+//        RequestQueue requestQueue = Volley.newRequestQueue(this);
+//
+//        //Adding request to the queue
+//        requestQueue.add(stringRequest);
+//    }
     public Map<String,String>imagepacking(int i){
 
         Map<String,String> params = new Hashtable<String, String>();
@@ -493,6 +499,8 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
                 depositData.put(Constants.ACCOUNT_NO_KEY,accountNo);
                 depositData.put(Constants.MOBILE_KEY,mobile);
                 depositData.put(Constants.REF_NO_KEY,refNo);
+                depositData.put(Constants.NIC_KEY,nic);
+                depositData.put(Constants.NARR_KEY,narr);
                 for (int i =0;i<size;i++){
                     JSONObject tempCheckData = new JSONObject();
 
@@ -634,6 +642,8 @@ private void setPic() {
         //amount =  mAmountView.getText().toString();
         mobile = mMobileView.getText().toString();
         refNo = mRefNoView.getText().toString();
+        nic = mNicView.getText().toString();
+        narr = mNarrView.getText().toString();
         //checkNo = mCheckNoView.getText().toString();
         // Reset errors.
         mAccountView.setError(null);
@@ -646,7 +656,8 @@ private void setPic() {
         //mAmountView.setError(null);
         mMobileView.setError(null);
         mRefNoView.setError(null);
-
+        mNicView.setError(null);
+        mNarrView.setError(null);
 
 
 
@@ -1259,6 +1270,35 @@ private void setPic() {
             return null;
         }
 
+    }
+    public void nicFormatValidation(){
+
+        mNicView.addTextChangedListener(new TextWatcher(){
+            //DecimalFormat dec = new DecimalFormat("0.00");
+            @Override
+            public void afterTextChanged(Editable arg0) {
+
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+            private String current = "";
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(!s.toString().equals(current)){
+                    mNicView.removeTextChangedListener(this);
+
+                    String cleanString = s.toString().replaceAll("[A-Z,a-z]", "");
+
+                    current = cleanString+"V";
+                    mNicView.setText(current);
+                    mNicView.setSelection(current.length()-1);
+
+                    mNicView.addTextChangedListener(this);
+                }
+            }
+        });
     }
 
 }
