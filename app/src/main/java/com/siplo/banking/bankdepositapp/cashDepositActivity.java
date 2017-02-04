@@ -38,6 +38,7 @@ public class cashDepositActivity extends AppCompatActivity {
     private EditText mAmountView;
     private EditText mMobileView;
     private EditText mRefNoView;
+    private EditText mNicView;
 
     private View mProgressView;
     private View mFormView;
@@ -46,6 +47,8 @@ public class cashDepositActivity extends AppCompatActivity {
     private String amount;
     private String mobile;
     private String refNo;
+    private String nic;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,12 +61,13 @@ public class cashDepositActivity extends AppCompatActivity {
         mAmountView =(EditText)findViewById(R.id.amount);
         mMobileView = (EditText)findViewById(R.id.mobile);
         mRefNoView = (EditText)findViewById(R.id.refNo);
-
+        mNicView = (EditText) findViewById(R.id.nic);
         mFormView = findViewById(R.id.deposit_form);
         mProgressView = findViewById(R.id.login_progress);
 
         mobileNumberValidation();
         currencyFormatValidation();
+        nicFormatValidation();
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -114,6 +118,8 @@ public class cashDepositActivity extends AppCompatActivity {
             depositData.put(Constants.AMOUNT_KEY,amount);
             depositData.put(Constants.MOBILE_KEY,mobile);
             depositData.put(Constants.REF_NO_KEY,refNo);
+            depositData.put(Constants.NIC_KEY,nic);
+
         }catch (JSONException e){
             Log.e("cash_deposit","jason error: "+e);
         }
@@ -130,11 +136,13 @@ public class cashDepositActivity extends AppCompatActivity {
         //Double.parseDouble(((EditText)cheque.getChildAt(4)).getText().toString().replaceAll("[$, LKR]", ""));
         mobile = mMobileView.getText().toString();
         refNo = mRefNoView.getText().toString();
+        nic = mNicView.getText().toString();
         // Reset errors.
         mAccountView.setError(null);
         mAmountView.setError(null);
         mMobileView.setError(null);
         mRefNoView.setError(null);
+        mNicView.setError(null);
 
 
 
@@ -318,6 +326,35 @@ public class cashDepositActivity extends AppCompatActivity {
                     mAmountView.setSelection(formatted.length()-4);
 
                     mAmountView.addTextChangedListener(this);
+                }
+            }
+        });
+    }
+    public void nicFormatValidation(){
+
+        mNicView.addTextChangedListener(new TextWatcher(){
+            //DecimalFormat dec = new DecimalFormat("0.00");
+            @Override
+            public void afterTextChanged(Editable arg0) {
+
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+            private String current = "";
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(!s.toString().equals(current)){
+                    mNicView.removeTextChangedListener(this);
+
+                    String cleanString = s.toString().replaceAll("[A-Z,a-z]", "");
+
+                    current = cleanString+"V";
+                    mNicView.setText(current);
+                    mNicView.setSelection(current.length()-1);
+
+                    mNicView.addTextChangedListener(this);
                 }
             }
         });

@@ -5,6 +5,8 @@
     <string name="prompt_username">Username</string>
     <string name="prompt_password">Password</string>
     <string name="prompt_account_no">Account No</string>
+    <string name="prompt_nic">NIC</string>
+
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This username is invalid</string>
