@@ -7,6 +7,9 @@
     <string name="prompt_account_no">Account No</string>
     <string name="prompt_nic">NIC</string>
     <string name="prompt_narr">Narration</string>
+    <string name="prompt_num_of_cheque">Number of Cheque</string>
+    <string name="prompt_bank_code">Bank Code</string>
+
 
 
     <string name="action_sign_in">Sign in</string>
