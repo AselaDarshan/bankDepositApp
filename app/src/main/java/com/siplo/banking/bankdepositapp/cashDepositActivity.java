@@ -222,7 +222,7 @@ public class cashDepositActivity extends AppCompatActivity {
                 try {
                     JSONObject jObject = new JSONObject(response);
                     printReceipt();
-                    printReceipt();
+
                     showTransactionCompleteDialog(jObject.getString(Constants.REF_NO_KEY));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -258,7 +258,7 @@ public class cashDepositActivity extends AppCompatActivity {
 //        }
 //    }
 
-    private void showTransactionCompleteDialog(String refNo){
+    private void showTransactionCompleteDialog(final String refNo){
         new AlertDialog.Builder(this)
                 .setTitle("Cash Deposit Successful")
                 .setMessage(amount+" LKR has been successfully deposited to Account "+accountNo+"\n" +
@@ -268,8 +268,19 @@ public class cashDepositActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // continue with delete
 
+
                         dialog.dismiss();
+                        Intent intent = new Intent(getApplicationContext(), PrintCustomerBill.class);
+                        intent.putExtra("cash",true);
+                        intent.putExtra(Constants.REF_NO_KEY,refNo);
+                        intent.putExtra(Constants.MOBILE_KEY,mobile);
+                        intent.putExtra(Constants.ACCOUNT_NO_KEY,accountNo);
+                        intent.putExtra(Constants.AMOUNT_KEY,amount);
+                        intent.putExtra(Constants.NIC_KEY,nic);
+                        startActivity(intent);
+
                         finish();
+
                     }
                 })
 

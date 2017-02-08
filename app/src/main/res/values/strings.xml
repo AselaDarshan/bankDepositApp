@@ -11,7 +11,6 @@
     <string name="prompt_bank_code">Bank Code</string>
 
 
-
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This username is invalid</string>
@@ -56,6 +55,7 @@
     <string name="next_cheque">Add</string>
 
     <string name="title_activity_print">PrintActivity</string>
+    <string name="print_bill_text">Print Bill</string>
 
 
 </resources>

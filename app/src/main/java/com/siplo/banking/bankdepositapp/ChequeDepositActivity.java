@@ -687,7 +687,7 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
                     //showTransactionCompleteDialog();
 
                     printReceipt();
-                    printReceipt();
+                    //printReceipt();
                     showTransactionCompleteDialog();
 
                 } catch (JSONException e) {
@@ -719,6 +719,16 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
                         // continue with delete
 
                         dialog.dismiss();
+                        Intent intent = new Intent(getApplicationContext(), PrintCustomerBill.class);
+                        intent.putExtra("cash",false);
+                        intent.putExtra(Constants.REF_NO_KEY,refNo);
+                        intent.putExtra(Constants.MOBILE_KEY,mobile);
+                        intent.putExtra(Constants.ACCOUNT_NO_KEY,accountNo);
+                        intent.putExtra(Constants.AMOUNT_KEY,amount);
+                        intent.putExtra(Constants.NIC_KEY,nic);
+                        intent.putExtra(Constants.BANK_CODE_KEY,bankCode);
+                        intent.putExtra(Constants.CHEQUES_KEY,numOfCheque);
+                        startActivity(intent);
                         finish();
                     }
                 })
