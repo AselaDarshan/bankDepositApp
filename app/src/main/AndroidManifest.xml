@@ -71,7 +71,8 @@
         <activity
             android:name=".PrintActivity"
             android:label="@string/title_activity_print"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".PrintCustomerBill"></activity>
     </application>
 
 </manifest>

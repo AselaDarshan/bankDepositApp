@@ -151,8 +151,9 @@ public class LoginActivity extends AppCompatActivity {
 
         // Store values at the time of the login attempt.
         username = mEmailView.getText().toString();
-        password = mPasswordView.getText().toString();
-
+       password = mPasswordView.getText().toString();
+//        username ="supun1";
+//        password = "1234";
         boolean cancel = false;
         View focusView = null;
 

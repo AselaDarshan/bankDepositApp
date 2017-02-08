@@ -12,6 +12,7 @@
     tools:context="com.siplo.banking.bankdepositapp.cashDepositActivity"
     tools:showIn="@layout/activity_cash_deposit">
     <!-- Login progress -->
+
     <ProgressBar
         android:id="@+id/login_progress"
         style="?android:attr/progressBarStyleLarge"
@@ -21,6 +22,7 @@
         android:visibility="gone"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
+
     <ScrollView
 
         android:layout_width="match_parent"
@@ -31,7 +33,6 @@
         android:id="@+id/deposit_form"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
         android:orientation="vertical">
      <android.support.design.widget.TextInputLayout
     android:layout_width="match_parent"
@@ -50,6 +51,25 @@
         android:maxLength="8"
         android:singleLine="true" />
 
+     </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/nic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/prompt_nic"
+                android:imeActionId="@+id/nic"
+                android:imeActionLabel="@string/action_sign_in_short"
+                android:imeOptions="actionUnspecified"
+                android:inputType="text"
+                android:maxLines="1"
+
+                android:singleLine="true" />
+
 </android.support.design.widget.TextInputLayout>
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
@@ -65,6 +85,7 @@
             android:imeOptions="actionUnspecified"
             android:inputType="numberDecimal"
             android:maxLines="1"
+
             android:singleLine="true" />
 
     </android.support.design.widget.TextInputLayout>
@@ -82,41 +103,54 @@
                 android:imeOptions="actionUnspecified"
                 android:inputType="phone"
                 android:maxLines="1"
+                android:maxLength="10"
                 android:singleLine="true" />
 
         </android.support.design.widget.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/refNo"
+
+
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/narr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/prompt_narr"
+                android:imeOptions="actionUnspecified"
+                android:inputType="textMultiLine"
+                android:lines="3"
+                android:minLines="1"
+                android:maxLines="10"
+                android:scrollbars="vertical"
+                android:singleLine="true" />
+
+
+        </android.support.design.widget.TextInputLayout>
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/prompt_ref"
-            android:imeActionId="@+id/refNo"
-            android:imeActionLabel="@string/action_sign_in_short"
-            android:imeOptions="actionUnspecified"
-            android:inputType="text"
-            android:maxLines="1"
-            android:singleLine="true" />
+            android:id="@+id/refNo"/>
 
-    </android.support.design.widget.TextInputLayout>
         <Button
-            android:layout_width="341dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/proceed_button_text"
             android:id="@+id/button"
             android:textColor="#ffffff"
             android:onClick="proceedCashDeposit"
             android:background="@drawable/button"
-            android:layout_centerVertical="true"
+            android:layout_below="@+id/fab"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_alignRight="@+id/deposit_form"
-            android:layout_alignEnd="@+id/deposit_form"
-            android:layout_marginTop="30dp" />
+            android:layout_marginTop="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
 
     </LinearLayout>
 </ScrollView>

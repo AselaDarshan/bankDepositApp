@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
@@ -19,8 +20,10 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,7 +40,10 @@ public class cashDepositActivity extends AppCompatActivity {
     private EditText mAccountView;
     private EditText mAmountView;
     private EditText mMobileView;
-    private EditText mRefNoView;
+    private TextView mRefNoView;
+    private EditText mNicView;
+    private EditText mNarrView;
+    //private EditText mBankCodeView;
 
     private View mProgressView;
     private View mFormView;
@@ -46,6 +52,10 @@ public class cashDepositActivity extends AppCompatActivity {
     private String amount;
     private String mobile;
     private String refNo;
+    private String nic;
+    private String narr;
+    //private String bankCode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,13 +67,17 @@ public class cashDepositActivity extends AppCompatActivity {
         mAccountView = (EditText)findViewById(R.id.accountNo);
         mAmountView =(EditText)findViewById(R.id.amount);
         mMobileView = (EditText)findViewById(R.id.mobile);
-        mRefNoView = (EditText)findViewById(R.id.refNo);
-
+        mRefNoView = (TextView) findViewById(R.id.refNo);
+        mNicView = (EditText) findViewById(R.id.nic);
+        mNarrView = (EditText) findViewById(R.id.narr);
         mFormView = findViewById(R.id.deposit_form);
         mProgressView = findViewById(R.id.login_progress);
+        //mBankCodeView = (EditText) findViewById(R.id.bankCode);
 
         mobileNumberValidation();
         currencyFormatValidation();
+        //nicFormatValidation();
+        AutoGenerateTransactionId();
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -111,9 +125,13 @@ public class cashDepositActivity extends AppCompatActivity {
         JSONObject depositData = new JSONObject();
         try{
             depositData.put(Constants.ACCOUNT_NO_KEY,accountNo);
+            //depositData.put(Constants.BANK_CODE_KEY,bankCode);
             depositData.put(Constants.AMOUNT_KEY,amount);
             depositData.put(Constants.MOBILE_KEY,mobile);
             depositData.put(Constants.REF_NO_KEY,refNo);
+            depositData.put(Constants.NIC_KEY,nic);
+            depositData.put(Constants.NARR_KEY,narr);
+
         }catch (JSONException e){
             Log.e("cash_deposit","jason error: "+e);
         }
@@ -129,19 +147,26 @@ public class cashDepositActivity extends AppCompatActivity {
         Log.d("Amount : ",amount);
         //Double.parseDouble(((EditText)cheque.getChildAt(4)).getText().toString().replaceAll("[$, LKR]", ""));
         mobile = mMobileView.getText().toString();
-        refNo = mRefNoView.getText().toString();
+
+        nic = mNicView.getText().toString();
+        narr = mNarrView.getText().toString();
+        //bankCode = mBankCodeView.getText().toString();
         // Reset errors.
         mAccountView.setError(null);
         mAmountView.setError(null);
         mMobileView.setError(null);
-        mRefNoView.setError(null);
 
+        mNicView.setError(null);
+        mNarrView.setError(null);
+        //mBankCodeView.setError(null);
 
 
 
         boolean cancel = false;
         View focusView = null;
-
+        if(!TextUtils.isEmpty(amount)){
+            amount = amount.replaceAll("[$, LKR]", "");
+        }
         if (TextUtils.isEmpty(accountNo)) {
             mAccountView.setError(getString(R.string.accountNo_empty));
             focusView = mAccountView;
@@ -160,6 +185,12 @@ public class cashDepositActivity extends AppCompatActivity {
             cancel = true;
 
         }
+//        else if (TextUtils.isEmpty(bankCode)) {
+//            mBankCodeView.setError("Please Enter Bank Code");
+//            focusView = mBankCodeView;
+//            cancel = true;
+//
+//        }
 //        else if (TextUtils.isEmpty(refNo)) {
 //            mRefNoView.setError(getString(R.string.accountNo_empty));
 //            focusView = mRefNoView;
@@ -172,6 +203,16 @@ public class cashDepositActivity extends AppCompatActivity {
         }
         return true;
     }
+    private void AutoGenerateTransactionId(){
+
+                    int time = (int) (System.currentTimeMillis());
+                    refNo = Integer.toString(time);
+                    mRefNoView.setText("ReferenceNo: "+ refNo); ;
+
+
+
+
+    }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -181,6 +222,7 @@ public class cashDepositActivity extends AppCompatActivity {
                 try {
                     JSONObject jObject = new JSONObject(response);
                     printReceipt();
+
                     showTransactionCompleteDialog(jObject.getString(Constants.REF_NO_KEY));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -216,7 +258,7 @@ public class cashDepositActivity extends AppCompatActivity {
 //        }
 //    }
 
-    private void showTransactionCompleteDialog(String refNo){
+    private void showTransactionCompleteDialog(final String refNo){
         new AlertDialog.Builder(this)
                 .setTitle("Cash Deposit Successful")
                 .setMessage(amount+" LKR has been successfully deposited to Account "+accountNo+"\n" +
@@ -226,8 +268,19 @@ public class cashDepositActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // continue with delete
 
+
                         dialog.dismiss();
+                        Intent intent = new Intent(getApplicationContext(), PrintCustomerBill.class);
+                        intent.putExtra("cash",true);
+                        intent.putExtra(Constants.REF_NO_KEY,refNo);
+                        intent.putExtra(Constants.MOBILE_KEY,mobile);
+                        intent.putExtra(Constants.ACCOUNT_NO_KEY,accountNo);
+                        intent.putExtra(Constants.AMOUNT_KEY,amount);
+                        intent.putExtra(Constants.NIC_KEY,nic);
+                        startActivity(intent);
+
                         finish();
+
                     }
                 })
 
@@ -284,9 +337,27 @@ public class cashDepositActivity extends AppCompatActivity {
 
     private void   printReceipt(){
         ICallback callback = null;
+        SharedPreferences prefs = getSharedPreferences(Constants.PERSONAL_KEY, MODE_PRIVATE);
+        String name = prefs.getString(Constants.NAME_KEY,"no_user");//"No name defined" is the default value.
+        String mobile = prefs.getString(Constants.MOBILE_KEY,"000000000");
         WoyouPrinter woyouPrinter = WoyouPrinter.getInstance();
         woyouPrinter.initPrinter(getApplicationContext());
-        woyouPrinter.print("\nTransaction Type : Cash Deposit \nAmount : "+this.amount+" LKR \nAccount No: "+this.accountNo+" \nMobile No : "+this.mobile+"\nReference No : "+this.refNo,callback);
+        woyouPrinter.print("\nTransaction Type : Cash Deposit"+
+                "\nReference No : "+this.refNo+
+                " \nAmount : "+this.amount+
+                "\n"+
+
+                " LKR \nAccount No: "+this.accountNo+
+
+                "\nNIC: "+nic+
+                " \nMobile No : "+this.mobile+
+                "\n"+
+
+                "\ncollector :"+name+"("+mobile+")"+"\n\nCheque deposit and collections "+"\nare subject to realize and for"+"\nany clarification contact\n" +
+                "Samaraweera\n" +
+                "(071 589 4578/ ID: 148458)\n "+
+                "sign :...........\n"+
+                "----------------------",callback);
 
     }
     public void currencyFormatValidation(){
@@ -318,6 +389,35 @@ public class cashDepositActivity extends AppCompatActivity {
                     mAmountView.setSelection(formatted.length()-4);
 
                     mAmountView.addTextChangedListener(this);
+                }
+            }
+        });
+    }
+    public void nicFormatValidation(){
+
+        mNicView.addTextChangedListener(new TextWatcher(){
+            //DecimalFormat dec = new DecimalFormat("0.00");
+            @Override
+            public void afterTextChanged(Editable arg0) {
+
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+            private String current = "";
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(!s.toString().equals(current)){
+                    mNicView.removeTextChangedListener(this);
+
+                    String cleanString = s.toString().replaceAll("[A-Z,a-z]", "");
+
+                    current = cleanString+"V";
+                    mNicView.setText(current);
+                    mNicView.setSelection(current.length()-1);
+
+                    mNicView.addTextChangedListener(this);
                 }
             }
         });

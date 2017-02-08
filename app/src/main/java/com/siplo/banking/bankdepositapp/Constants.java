@@ -23,6 +23,10 @@ public final class Constants {
     public static final String CHECK_NO_KEY = "check_no";
     public static final String CHECK_INIT_KEY = "check_initial";
     public static final String CHECKS = "checks";
+    public static final String NIC_KEY = "nic" ;
+    public static final String NARR_KEY = "narr";
+    public static final String CHEQUES_KEY = "num_cheques";
+    public static final String BANK_CODE_KEY = "bank_code";
     //registration constants
     public static final String NAME_KEY="name";
     public static final String EMAIL_KEY = "email";
@@ -33,13 +37,20 @@ public final class Constants {
     public static final String PASSWORD_KEY = "password";
     //urls
    public static final String SERVER_URL = "http://amana.paymediasolutions.com";
-    //public static final String SERVER_URL = "http://192.168.8.110:8000";
+    //public static final String SERVER_URL = "http://192.168.43.82:8000";
     //routes
     public static final String CASH_DEPOSIT_ROUTE = "/deposit/cash";
     public static final String CHEQUE_DEPOSIT_ROUTE = "/deposit/cheque";
+    public static final String CHEQUE_IMAGE_UPLOAD_ROUTE = "/upload/cheque/image";
     public static final String REGISTER_ROUTE="/registerApp";
     public static final String LOGIN_ROUTE="/loginApp";
 
     public static final String PERSONAL_KEY = "personal";
+
+    //network
+    public static final String REQUEST_SUCCESS = "404";
+
+
+
 }
 
