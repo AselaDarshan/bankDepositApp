@@ -43,7 +43,7 @@ public class cashDepositActivity extends AppCompatActivity {
     private TextView mRefNoView;
     private EditText mNicView;
     private EditText mNarrView;
-    private EditText mBankCodeView;
+    //private EditText mBankCodeView;
 
     private View mProgressView;
     private View mFormView;
@@ -54,7 +54,7 @@ public class cashDepositActivity extends AppCompatActivity {
     private String refNo;
     private String nic;
     private String narr;
-    private String bankCode;
+    //private String bankCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,11 +72,11 @@ public class cashDepositActivity extends AppCompatActivity {
         mNarrView = (EditText) findViewById(R.id.narr);
         mFormView = findViewById(R.id.deposit_form);
         mProgressView = findViewById(R.id.login_progress);
-        mBankCodeView = (EditText) findViewById(R.id.bankCode);
+        //mBankCodeView = (EditText) findViewById(R.id.bankCode);
 
         mobileNumberValidation();
         currencyFormatValidation();
-        nicFormatValidation();
+        //nicFormatValidation();
         AutoGenerateTransactionId();
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -125,7 +125,7 @@ public class cashDepositActivity extends AppCompatActivity {
         JSONObject depositData = new JSONObject();
         try{
             depositData.put(Constants.ACCOUNT_NO_KEY,accountNo);
-            depositData.put(Constants.BANK_CODE_KEY,bankCode);
+            //depositData.put(Constants.BANK_CODE_KEY,bankCode);
             depositData.put(Constants.AMOUNT_KEY,amount);
             depositData.put(Constants.MOBILE_KEY,mobile);
             depositData.put(Constants.REF_NO_KEY,refNo);
@@ -150,7 +150,7 @@ public class cashDepositActivity extends AppCompatActivity {
 
         nic = mNicView.getText().toString();
         narr = mNarrView.getText().toString();
-        bankCode = mBankCodeView.getText().toString();
+        //bankCode = mBankCodeView.getText().toString();
         // Reset errors.
         mAccountView.setError(null);
         mAmountView.setError(null);
@@ -158,13 +158,15 @@ public class cashDepositActivity extends AppCompatActivity {
 
         mNicView.setError(null);
         mNarrView.setError(null);
-        mBankCodeView.setError(null);
+        //mBankCodeView.setError(null);
 
 
 
         boolean cancel = false;
         View focusView = null;
-
+        if(!TextUtils.isEmpty(amount)){
+            amount = amount.replaceAll("[$, LKR]", "");
+        }
         if (TextUtils.isEmpty(accountNo)) {
             mAccountView.setError(getString(R.string.accountNo_empty));
             focusView = mAccountView;
@@ -183,12 +185,12 @@ public class cashDepositActivity extends AppCompatActivity {
             cancel = true;
 
         }
-        else if (TextUtils.isEmpty(bankCode)) {
-            mBankCodeView.setError("Please Enter Bank Code");
-            focusView = mBankCodeView;
-            cancel = true;
-
-        }
+//        else if (TextUtils.isEmpty(bankCode)) {
+//            mBankCodeView.setError("Please Enter Bank Code");
+//            focusView = mBankCodeView;
+//            cancel = true;
+//
+//        }
 //        else if (TextUtils.isEmpty(refNo)) {
 //            mRefNoView.setError(getString(R.string.accountNo_empty));
 //            focusView = mRefNoView;
@@ -335,7 +337,7 @@ public class cashDepositActivity extends AppCompatActivity {
                 "\n"+
 
                 " LKR \nAccount No: "+this.accountNo+
-                "\nBank Code: "+bankCode+
+
                 "\nNIC: "+nic+
                 " \nMobile No : "+this.mobile+
                 "\n"+

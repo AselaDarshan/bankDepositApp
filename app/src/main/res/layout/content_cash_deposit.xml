@@ -52,24 +52,7 @@
         android:singleLine="true" />
 
      </android.support.design.widget.TextInputLayout>
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
 
-            <EditText
-                android:id="@+id/bankCode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/prompt_bank_code"
-                android:imeActionId="@+id/bankCode"
-                android:imeActionLabel="@string/action_sign_in_short"
-                android:imeOptions="actionUnspecified"
-                android:inputType="number"
-                android:maxLines="1"
-                android:maxLength="8"
-                android:singleLine="true" />
-
-        </android.support.design.widget.TextInputLayout>
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -82,9 +65,9 @@
                 android:imeActionId="@+id/nic"
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionUnspecified"
-                android:inputType="number"
+                android:inputType="text"
                 android:maxLines="1"
-                android:maxLength="10"
+
                 android:singleLine="true" />
 
 </android.support.design.widget.TextInputLayout>

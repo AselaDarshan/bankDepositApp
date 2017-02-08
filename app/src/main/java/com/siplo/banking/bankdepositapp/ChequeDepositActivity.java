@@ -117,7 +117,7 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
         mBankCodeView = (EditText) findViewById(R.id.bankCode);
 
         mobileNumberValidation();
-        nicFormatValidation();
+        //nicFormatValidation();
         amountVAlidation();
         AutoGenerateTransactionId();
 
@@ -618,7 +618,7 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
         View focusView = null;
 
         if(!TextUtils.isEmpty(amount)){
-            amount = amount.replaceAll("[$,. LKR]", "");
+            amount = amount.replaceAll("[$, LKR]", "");
         }
 
         if (TextUtils.isEmpty(accountNo)) {
