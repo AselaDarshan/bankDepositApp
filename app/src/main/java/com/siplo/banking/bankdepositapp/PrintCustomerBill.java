@@ -18,6 +18,7 @@ public class PrintCustomerBill extends AppCompatActivity {
     private String mobile;
     private  String numOfCheque;
     private  String bankCode;
+    private String narr;
     private  boolean cashTransaction;
     Button print_bill_btn;
     @Override
@@ -30,6 +31,7 @@ public class PrintCustomerBill extends AppCompatActivity {
         mobile = intent.getStringExtra(Constants.MOBILE_KEY);
         refNo = intent.getStringExtra(Constants.REF_NO_KEY);
         accountNo = intent.getStringExtra(Constants.ACCOUNT_NO_KEY);
+        narr = intent.getStringExtra(Constants.NARR_KEY);
         Log.d(Constants.AMOUNT_KEY,amount);
         print_bill_btn = (Button) findViewById(R.id.print_button);
         print_bill_btn.setOnClickListener(new View.OnClickListener() {
@@ -57,22 +59,23 @@ public class PrintCustomerBill extends AppCompatActivity {
         String mobile = prefs.getString(Constants.MOBILE_KEY,"000000000");
         WoyouPrinter woyouPrinter = WoyouPrinter.getInstance();
         woyouPrinter.initPrinter(getApplicationContext());
-        woyouPrinter.print("\nTransaction Type : Cash Deposit"+
+        woyouPrinter.print("\nTrans : Cash Deposit"+
                 "\nReference No : "+this.refNo+
-                " \nAmount : "+this.amount+
+                " \nAmount : "+this.amount+"  LKR "+
+                "\nNarration: "+this.narr+
                 "\n"+
 
-                " LKR \nAccount No: "+this.accountNo+
+                "\nAccount No: "+this.accountNo+
 
                 "\nNIC: "+nic+
                 " \nMobile No : "+this.mobile+
                 "\n"+
 
-                "\ncollector :"+name+"("+mobile+")"+"\n\nCheque deposit and collections "+"\nare subject to realize and for"+"\nany clarification contact\n" +
-                "Samaraweera\n" +
-                "(071 589 4578/ ID: 148458)\n "+
-                "sign :...........\n"+
-                "----------------------",callback);
+                "\nCollector :"+name+"("+mobile+")"+"\n\nCheque deposit and collections "+"\nare subject to realize and for"+"\nany clarification contact\n" +
+                "Samara weera\n" +
+                "(071 589 4578/ ID: 148458)\n\n "+
+                "............\n"+
+                "    sign",callback);
 
     }
     private void   printReceiptCheques(){
@@ -85,10 +88,11 @@ public class PrintCustomerBill extends AppCompatActivity {
         woyouPrinter.initPrinter(getApplicationContext());
 
         woyouPrinter.print(
-                "\nTransaction Type : Cheque Deposit "+
+                "\nTrans : Cheque Deposit "+
                         "\nReference No : "+this.refNo+
                         "\nNumber Of Cheques :"+numOfCheque+
-                        "\nAmount of Cheques :"+amount+
+                        "\nAmount of Cheques :"+amount+" LKR"+
+                        "\nNarration: "+this.narr+
                         "\n"+
                         " \nAccount No: "+this.accountNo+
                         "\nBank Code: "+bankCode+
@@ -97,11 +101,11 @@ public class PrintCustomerBill extends AppCompatActivity {
                         "\n"+
 
 
-                        "\ncollector :"+name+"("+mobile+")"+"\n\nCheque deposit and collections "+"\nare subject to realize and for"+"\nany clarification contact\n" +
-                        "Samaraweera\n" +
+                        "\nCollector :"+name+"("+mobile+")"+"\n\nCheque deposit and collections "+"\nare subject to realize and for"+"\nany clarification contact\n" +
+                        "Samara weera\n" +
                         "(071 589 4578/ ID: 148458)\n "+
-                        "sign :..........."+
-                        "\n--------------------",callback);
+                        "............"+
+                        "\n   sign ",callback);
 
 
         Log.d("printcall:",""+amount);

@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -43,6 +44,7 @@ public class cashDepositActivity extends AppCompatActivity {
     private TextView mRefNoView;
     private EditText mNicView;
     private EditText mNarrView;
+    private Button processBtn;
     //private EditText mBankCodeView;
 
     private View mProgressView;
@@ -72,6 +74,7 @@ public class cashDepositActivity extends AppCompatActivity {
         mNarrView = (EditText) findViewById(R.id.narr);
         mFormView = findViewById(R.id.deposit_form);
         mProgressView = findViewById(R.id.login_progress);
+        processBtn = (Button) findViewById(R.id.button);
         //mBankCodeView = (EditText) findViewById(R.id.bankCode);
 
         mobileNumberValidation();
@@ -113,6 +116,7 @@ public class cashDepositActivity extends AppCompatActivity {
 
     public void proceedCashDeposit(View view){
         if(validateInputs()){
+            processBtn.setCursorVisible(false);
             showProgress(true);
             Log.d("cash_deposit","processing deposit");
             sendDataToServer();
@@ -277,6 +281,7 @@ public class cashDepositActivity extends AppCompatActivity {
                         intent.putExtra(Constants.ACCOUNT_NO_KEY,accountNo);
                         intent.putExtra(Constants.AMOUNT_KEY,amount);
                         intent.putExtra(Constants.NIC_KEY,nic);
+                        intent.putExtra(Constants.NARR_KEY,narr);
                         startActivity(intent);
 
                         finish();
@@ -342,22 +347,24 @@ public class cashDepositActivity extends AppCompatActivity {
         String mobile = prefs.getString(Constants.MOBILE_KEY,"000000000");
         WoyouPrinter woyouPrinter = WoyouPrinter.getInstance();
         woyouPrinter.initPrinter(getApplicationContext());
-        woyouPrinter.print("\nTransaction Type : Cash Deposit"+
+
+        woyouPrinter.print("\nTrans : Cash Deposit"+
                 "\nReference No : "+this.refNo+
-                " \nAmount : "+this.amount+
+                " \nAmount : "+this.amount+"  LKR "+
+                "\nNarration: "+this.narr+
                 "\n"+
 
-                " LKR \nAccount No: "+this.accountNo+
+                "\nAccount No: "+this.accountNo+
 
                 "\nNIC: "+nic+
                 " \nMobile No : "+this.mobile+
                 "\n"+
 
-                "\ncollector :"+name+"("+mobile+")"+"\n\nCheque deposit and collections "+"\nare subject to realize and for"+"\nany clarification contact\n" +
-                "Samaraweera\n" +
-                "(071 589 4578/ ID: 148458)\n "+
-                "sign :...........\n"+
-                "----------------------",callback);
+                "\nCollector :"+name+"("+mobile+")"+"\n\nCheque deposit and collections "+"\nare subject to realize and for"+"\nany clarification contact\n" +
+                "Samara weera\n" +
+                "(071 589 4578/ ID: 148458)\n\n "+
+                "............\n"+
+                "    sign",callback);
 
     }
     public void currencyFormatValidation(){

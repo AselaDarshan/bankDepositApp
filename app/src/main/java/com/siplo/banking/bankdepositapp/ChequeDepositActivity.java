@@ -81,7 +81,7 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
     private EditText mNarrView;
     private EditText mNumOfChequeView;
     private EditText mBankCodeView;
-
+    private Button processBtn;
 
 
     private String accountNo;
@@ -115,7 +115,7 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
         mNumOfChequeView = (EditText) findViewById(R.id.numOfCheck);
         mAmountView = (EditText) findViewById(R.id.amount);
         mBankCodeView = (EditText) findViewById(R.id.bankCode);
-
+        processBtn = (Button) findViewById(R.id.button);
         mobileNumberValidation();
         //nicFormatValidation();
         amountVAlidation();
@@ -165,6 +165,7 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
     public void proceedCashDeposit(View view){
 
         if(validateInputs()){
+            processBtn.setCursorVisible(false);
             Log.d("cheque_deposit","precessing deposit");
             sendDataToServer();
             //uploadImages();
@@ -728,6 +729,7 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
                         intent.putExtra(Constants.NIC_KEY,nic);
                         intent.putExtra(Constants.BANK_CODE_KEY,bankCode);
                         intent.putExtra(Constants.CHEQUES_KEY,numOfCheque);
+                        intent.putExtra(Constants.NARR_KEY,narr);
                         startActivity(intent);
                         finish();
                     }
@@ -1186,10 +1188,11 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
         woyouPrinter.initPrinter(getApplicationContext());
 
         woyouPrinter.print(
-                "\nTransaction Type : Cheque Deposit "+
+                "\nTrans : Cheque Deposit "+
                         "\nReference No : "+this.refNo+
                         "\nNumber Of Cheques :"+numOfCheque+
-                        "\nAmount of Cheques :"+amount+
+                        "\nAmount of Cheques :"+amount+" LKR"+
+                        "\nNarration: "+this.narr+
                         "\n"+
                         " \nAccount No: "+this.accountNo+
                         "\nBank Code: "+bankCode+
@@ -1198,11 +1201,11 @@ public class ChequeDepositActivity extends AppCompatActivity implements Informat
                         "\n"+
 
 
-                        "\ncollector :"+name+"("+mobile+")"+"\n\nCheque deposit and collections "+"\nare subject to realize and for"+"\nany clarification contact\n" +
-                "Samaraweera\n" +
+                        "\nCollector :"+name+"("+mobile+")"+"\n\nCheque deposit and collections "+"\nare subject to realize and for"+"\nany clarification contact\n" +
+                "Samara weera\n" +
                 "(071 589 4578/ ID: 148458)\n "+
-                "sign :..........."+
-                "\n--------------------",callback);
+                "............"+
+                "\n   sign ",callback);
 
 
         Log.d("printcall:",""+amount);
